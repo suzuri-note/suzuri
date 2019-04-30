@@ -8,9 +8,10 @@
                 <i class="fab fa-markdown editor-markdown ml-3"></i>
             </button>
         </div>
-        <div v-if="preview" class="bg-paper"></div>
-        <div v-else class="form-group bg-paper">
-            <textarea name="" id="" rows="10" class="form-control editor-textarea" v-model="body" @keyup="onKeyup"></textarea>
+        
+        <div class="form-group bg-surface">
+            <div v-if="preview" class="preview" v-html="htmlBody"></div>
+            <textarea v-else name="" id="" class="form-control editor-textarea" v-model="body" @keyup="onKeyup"></textarea>
         </div>
         <div class="editor-footer">
             <button type="button" class="icon-btn icon-btn-secondary" v-bind:disabled="editing">
@@ -21,6 +22,10 @@
 </template>
 
 <script>
+import MarkdownIt from 'markdown-it'
+
+const md = new MarkdownIt()
+
 export default {
     data: () => ({
         title: "",
@@ -36,6 +41,9 @@ export default {
         this.titlePlaceholder = today.getFullYear() + "." + today.getMonth() + "." + today.getDate()
     },
     computed: {
+        htmlBody: function() {
+            return md.render(this.body)
+        },
         previewButtonClass: function () {
             return {
                 'icon-btn': true,
@@ -75,7 +83,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style scoped lang="scss">
 input.title {
     font-size: 1.2em;
     border: none;
@@ -92,6 +100,22 @@ input.title:focus {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+.preview {
+    text-align: left;
+    min-height: 20rem;
+    padding: .5rem 1.0rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #F8FBF8;
+    background-clip: padding-box;
+    border: 1px solid $border;
+    border-radius: .25rem;
+}
+.editor-textarea {
+    min-height: 20rem;
 }
 .editor-footer {
     display: flex;
