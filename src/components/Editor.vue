@@ -14,7 +14,7 @@
             <textarea v-else name="" id="" class="form-control editor-content" v-model="body" @keyup="onKeyup"></textarea>
         </div>
         <div class="editor-footer">
-            <button type="button" class="icon-btn icon-btn-secondary" v-bind:disabled="editing">
+            <button type="button" class="icon-btn" v-bind:disabled="editing">
                 <i v-bind:class="doneButtonIconClass"></i>  
             </button>
         </div>
@@ -52,8 +52,13 @@ export default {
             return {
                 fas: true,
                 'icon-large': true,
-                'fa-ellipsis-h': this.editing,
-                'fa-check-circle': !this.editing
+
+                'fa-circle-notch': this.editing,
+                'icon-btn-border': this.editing,
+                'icon-rotate': this.editing,
+
+                'fa-check-circle': !this.editing,
+                'icon-btn-secondary': !this.editing,
             }
         }
     },
@@ -72,7 +77,7 @@ export default {
                     console.log('saved: ' + self.body)
                     self.lastSavedBody = self.body
                     self.editing = false
-                }, 1000)
+                }, 1500)
             }
         }
     }
@@ -127,5 +132,23 @@ input.title:focus {
     background-clip: padding-box;
     border: 1px solid $border;
     border-radius: .25rem;
+}
+.icon-rotate {
+    animation: rotate 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    /* webkit用animation */
+    -webkit-animation: rotate 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+}
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); } 
+}
+@-webkit-keyframes rotate {
+     /* webkit用keyframes */ 
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
 }
 </style>
