@@ -200,6 +200,11 @@ hr {
   border-top: 1px solid $border;
 }
 
+/* navbar */
+.navbar {
+  z-index: 1000;
+}
+
 /* dropdown-menu */
 .dropdown-menu {
   background-clip: padding-box;
@@ -217,7 +222,7 @@ hr {
   left: auto;
   right: 0.5rem;
   width: auto;
-  z-index: 100;
+  z-index: 99;
 
   display: block;
 }
