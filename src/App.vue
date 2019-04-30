@@ -1,18 +1,16 @@
 <template>
   <div id="app">
     <Navbar class="header-layout"/>
-    <section class="editor">
+    <section class="editor px-3">
       <Editor/>
     </section>
-    <section class="note p-3">
+    <section class="note px-3">
       <DailyNote v-for="dailyNote in note" :key="dailyNote.date" :dailyNote="dailyNote"/>
     </section>
-    <section class="footer p-3">
+    <section class="footer px-3">
       <hr>
       <Footer/>
     </section>
-    
-    
   </div>
 </template>
 
@@ -45,6 +43,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .header-layout {
@@ -53,28 +55,19 @@ export default {
 }
 section.editor {
   min-height: 100vh;
-  padding: 4.125rem 1rem 1rem 1rem;
+  padding-top: 4.125rem;
   width: 100%;
-  min-width: 400px;
   max-width: 680px;
-  margin-left: auto;
-  margin-right: auto;
 }
 section.note {
   width: 100%;
-  min-width: 400px;
   max-width: 680px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1em;
+  margin-bottom: 1rem;
 }
 section.footer {
   width: 100%;
-  min-width: 400px;
   max-width: 680px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1em;
+  margin-bottom: 1rem;
 }
 
 
