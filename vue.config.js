@@ -4,7 +4,7 @@ module.exports = {
             sass: {
                 data: `
                     @import "@/style/_variables.scss";
-                    @import "@/style/mixins.scss";
+                    @import "@/style/_mixins.scss";
                 `
             },
         },

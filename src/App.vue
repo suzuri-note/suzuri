@@ -118,6 +118,10 @@ a {
   border: none;
   background-color: transparent;
 }
+.icon-btn:focus {
+  outline: none!important;
+  box-shadow: none!important;
+}
 .icon-btn-secondary {
   color: $secondary;
 }
@@ -129,5 +133,32 @@ a {
 }
 .icon-btn-border:hover {
   color: $border-dark;
+}
+
+/* form-control */
+.form-control {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + .75rem + 2px);
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: $surface;
+  background-clip: padding-box;
+  border: 1px solid $border;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control:focus {
+  color: #495057;
+  background-color: $surface;
+  border-color: $border-dark;
+  outline: 0;
+  box-shadow: none;
+}
+textarea.form-control {
+  resize: none;
 }
 </style>
