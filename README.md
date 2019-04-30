@@ -1,5 +1,8 @@
 # suzuri
 
+## Demo
+https://suzuri-note.github.io/suzuri/
+
 ## Project setup
 ```
 npm install
