@@ -1,6 +1,5 @@
 <template>
     <footer>
-        <hr class="bg-border">
         <div class="footer-links">
             <div class="footer-links-left">
                 <span class="text-border">©Suzuri</span>
@@ -19,9 +18,6 @@
 </template>
 
 <style scoped lang="scss">
-hr {
-    border-top: 1px solid $border;
-}
 .footer-links {
     display: flex;
     justify-content: space-between;

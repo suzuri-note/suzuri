@@ -1,5 +1,5 @@
 <template>
-    <div id="editor" class="editor">
+    <div class="root">
         <div class="editor-header">
             <div class="editor-title">
                 <input type="text" class="form-control title text-muted" v-model="title" v-bind:placeholder="titlePlaceholder">
@@ -10,8 +10,8 @@
         </div>
         
         <div class="form-group bg-surface">
-            <div v-if="preview" class="preview" v-html="htmlBody"></div>
-            <textarea v-else name="" id="" class="form-control editor-textarea" v-model="body" @keyup="onKeyup"></textarea>
+            <Page v-if="preview" :body="body" class="editor-content"/>
+            <textarea v-else name="" id="" class="form-control editor-content" v-model="body" @keyup="onKeyup"></textarea>
         </div>
         <div class="editor-footer">
             <button type="button" class="icon-btn icon-btn-secondary" v-bind:disabled="editing">
@@ -22,11 +22,11 @@
 </template>
 
 <script>
-import MarkdownIt from 'markdown-it'
-
-const md = new MarkdownIt()
-
+import Page from './Page.vue'
 export default {
+    components: {
+        Page
+    },
     data: () => ({
         title: "",
         titlePlaceholder: "",
@@ -41,9 +41,6 @@ export default {
         this.titlePlaceholder = today.getFullYear() + "." + today.getMonth() + "." + today.getDate()
     },
     computed: {
-        htmlBody: function() {
-            return md.render(this.body)
-        },
         previewButtonClass: function () {
             return {
                 'icon-btn': true,
@@ -95,11 +92,28 @@ input.title:focus {
     border: none;
     box-shadow: none;
 }
+.root {
+    display: flex;
+    flex-direction: column;
+}
 .editor-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+.editor-content {
+    min-height: 20rem;
+}
+.editor-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+.editor-title {
+    flex-grow: 1;
+}
+.editor-markdown {
+    display: block;
 }
 .preview {
     text-align: left;
@@ -113,18 +127,5 @@ input.title:focus {
     background-clip: padding-box;
     border: 1px solid $border;
     border-radius: .25rem;
-}
-.editor-textarea {
-    min-height: 20rem;
-}
-.editor-footer {
-    display: flex;
-    justify-content: flex-end;
-}
-.editor-title {
-    flex-grow: 1;
-}
-.editor-markdown {
-    display: block;
 }
 </style>

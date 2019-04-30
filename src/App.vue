@@ -1,8 +1,18 @@
 <template>
   <div id="app">
-    <Navbar/>
-    <Editor class="editor"/>
-    <Footer class="footer"/>
+    <Navbar class="header-layout"/>
+    <section class="editor">
+      <Editor/>
+    </section>
+    <section class="note p-3">
+      <DailyNote v-for="dailyNote in note" :key="dailyNote.date" :dailyNote="dailyNote"/>
+    </section>
+    <section class="footer p-3">
+      <hr>
+      <Footer/>
+    </section>
+    
+    
   </div>
 </template>
 
@@ -10,40 +20,47 @@
 import Navbar from './components/Navbar.vue'
 import Editor from './components/Editor.vue'
 import Footer from './components/Footer.vue'
+import DailyNote from './components/DailyNote.vue'
+
+import DummyData from './store/dummy.js'
 
 export default {
   name: 'app',
   components: {
     Navbar,
     Editor,
-    Footer
-  }
+    Footer,
+    DailyNote
+  },
+  data: () => ({
+    note: DummyData.note
+  }),
 }
 </script>
 
 <style scoped lang="scss">
-  #app {
+#app {
   font-family: 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
 }
-.editor {
-  flex-grow: 1;
+
+.header-layout {
+  position: fixed;
+  width: 100vw;
+}
+section.editor {
+  min-height: 100vh;
+  padding: 4.125rem 1rem 1rem 1rem;
   width: 100%;
   min-width: 400px;
   max-width: 680px;
-  margin-top: 1em;
   margin-left: auto;
-  margin-right: auto;  
-  padding: 1em;
+  margin-right: auto;
 }
-.footer {
+section.note {
   width: 100%;
   min-width: 400px;
   max-width: 680px;
@@ -51,6 +68,16 @@ export default {
   margin-right: auto;
   margin-bottom: 1em;
 }
+section.footer {
+  width: 100%;
+  min-width: 400px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1em;
+}
+
+
 </style>
 
 
@@ -85,6 +112,12 @@ a {
 }
 .text-secnodary {
     color: $secondary!important;
+}
+.text-default {
+  color: $text;
+}
+.text-link {
+  color: $link;
 }
 .text-error {
     color: $error;
@@ -160,5 +193,76 @@ a {
 }
 textarea.form-control {
   resize: none;
+}
+
+/* hr */
+hr {
+  border-top: 1px solid $border;
+}
+
+/* dropdown-menu */
+.dropdown-menu {
+  background-clip: padding-box;
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: .25rem;
+  box-shadow: 0 3px 12px rgba(27,31,35,.15);
+  
+  list-style: none;
+  margin-top: 2px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  position: absolute;
+  top: 80%;
+  left: auto;
+  right: 0.5rem;
+  width: auto;
+  z-index: 100;
+
+  display: block;
+}
+.dropdown-menu:after, .dropdown-menu:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    border: .5rem solid transparent;
+    border-bottom-color: $border;
+    top: -1.0rem;
+    left: auto;
+    right: 1.0rem;
+    z-index: 1;
+}
+.dropdown-menu:before {
+    border: .5rem solid transparent;
+    border-bottom-color: $surface;
+    top: -webkit-calc(-1.0rem + 2px);
+    top: -moz-calc(-1.0rem + 2px);
+    top: calc(-1.0rem + 2px);
+    left: auto;
+    right: 1.0rem;
+    z-index: 2;
+}
+
+/* dropdown-item */
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: .25rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+}
+.dropdown-item.active, .dropdown-item:active {
+    color: #fff;
+    text-decoration: none;
+    background-color: $secondary;
+}
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: $link;
 }
 </style>
