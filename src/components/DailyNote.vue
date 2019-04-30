@@ -28,8 +28,8 @@ export default {
     computed: {
         dateLinkClass: function() {
             return {
-                'chevron-right': this.collapse,
-                'chevron-down': !this.collapse
+                'chevron-right': !this.collapse,
+                'chevron-down': this.collapse
             }
         },
     },
