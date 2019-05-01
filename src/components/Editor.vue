@@ -2,7 +2,7 @@
     <div class="root">
         <div class="editor-header">
             <div class="editor-title">
-                <input type="text" class="form-control title text-muted" v-model="title" v-bind:placeholder="titlePlaceholder">
+                <input type="text" class="form-control title text-muted" v-model="title" v-bind:placeholder="titlePlaceholder" @keyup="onKeyup">
             </div>
             <button type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
                 <i class="fab fa-markdown editor-markdown ml-3"></i>
@@ -29,6 +29,7 @@ export default {
     },
     data: () => ({
         title: "",
+        lastSavedTitle: "",
         titlePlaceholder: "",
         body: "",
         lastSavedBody: "",
@@ -67,7 +68,7 @@ export default {
             this.preview = !this.preview
         },
         onKeyup: function() {
-            if (this.body !== this.lastSavedBody) {
+            if (this.body !== this.lastSavedBody || this.title !== this.lastSavedTitle) {
                 if (this.timeout) {
                     clearTimeout(this.timeout)
                 }
@@ -75,6 +76,7 @@ export default {
                 var self = this
                 this.timeout = setTimeout(function(){
                     console.log('saved: ' + self.body)
+                    self.lastSavedTitle = self.title
                     self.lastSavedBody = self.body
                     self.editing = false
                 }, 1500)
