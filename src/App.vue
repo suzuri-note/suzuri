@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar class="header-layout"/>
-    <section class="editor px-3">
+    <section class="editor px-3 my-2">
       <Editor/>
     </section>
     <section class="note px-3">
