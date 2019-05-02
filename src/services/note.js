@@ -1,7 +1,7 @@
 import shortid from 'shortid'
 
 const save = (data) => {
-  return new Promise((resolve, reject) => {
+  return new  Promise((resolve, reject) => {
     // check data construnction
     const required = ['title', 'body']
     const checkKeys = (data, keys) => {
@@ -15,20 +15,30 @@ const save = (data) => {
       // set timestamp
       const now = Date.now()
       data.updatedAt = now
-      if (data.id) data.createdAt = now
-      // set key and value
-      const key = data.id || shortid.generate()
-      const value = JSON.stringify(data)
+      // set id
+      if (!data.id) {
+        data.id = shortid.generate()
+        data.createdAt = now
+      }
+      // create data for localStorage
+      const key = data.id
+      const valueObj = Object.assign({}, data)
+      delete valueObj.id
+      const value = JSON.stringify(valueObj)
       // save
       localStorage.setItem(key, value)
+      // return value
+      return data
     }
     // main
     try {
       checkKeys(data, required)
-      saveLocalStorage(data)
-      resolve({ status: 'success' })
+      const res= saveLocalStorage(data)
+      resolve({
+        status: "success",
+        data: res
+      })
     } catch(err) {
-      console.log(err.message)
       reject(err)
     }
   })
