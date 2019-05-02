@@ -1,3 +1,5 @@
+import shortid from 'shortid'
+
 const save = (data) => {
   return new Promise((resolve, reject) => {
     // check data construnction
@@ -10,7 +12,7 @@ const save = (data) => {
     }
     // save data
     const saveLocalStorage = (data) => {
-      const key = 'xxxxxx'
+      const key = shortid.generate()
       const value = JSON.stringify(data.pages)
 
       localStorage.setItem(key, value)
