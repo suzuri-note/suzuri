@@ -7,52 +7,52 @@ describe('note', () => {
     // create
     describe('isn\'t passed id', () => {
       it('returns success status when success', () => {
-        const data = dummy.createDummy
         expect.assertions(4)
+        const data = dummy.createDummy
+        // check data
+        expect(data.id).toBeFalsy()
+        expect(data.title).toBeTruthy()
         return note.save(data).then(result => {
-          // check data
-          expect(data.id).toBeFalsy()
-          expect(data.title).toBeTruthy()
           // check result
-          expect(result.updatedAt).toBe(result.createdAt)
+          expect(result.data.updatedAt).toBe(result.data.createdAt)
           expect(result.status).toBe('success')
         })
       })
 
       it('returns an error when wrong arguments', () => {
-        const data = dummy.createErrDummy
         expect.assertions(3)
+        const data = dummy.createErrDummy
+        // check data
+        expect(data.id).toBeFalsy()
+        expect(data.title).toBeFalsy()
         return note.save(data).catch(err => {
-          // check data
-          expect(data.id).toBeFalsy()
-          expect(data.title).toBeFalsy()
           // check err
           expect(err.message).toMatch('error')
         })
       })
     })
     // update
-    describe('passed id', () => {
+    describe('is passed id', () => {
       it('returns success status when success', () => {
-        const data = dummy.updateDummy
         expect.assertions(4)
+        const data = dummy.updateDummy
+        // check data
+        expect(data.id).toBeTruthy()
+        expect(data.title).toBeTruthy()
         return note.save(data).then(result => {
-          // check data
-          expect(data.id).toBeTruthy()
-          expect(data.title).toBeTruthy()
           // check result
-          expect(result.updatedAt).toBeGreaterThan(result.createdAt)
+          expect(result.data.updatedAt).toBeGreaterThan(result.data.createdAt)
           expect(result.status).toBe('success')
         })
       })
 
       it('returns an error when wrong arguments', () => {
-        const data = dummy.updateErrDummy
         expect.assertions(3)
+        const data = dummy.updateErrDummy
+        // check data
+        expect(data.id).toBeTruthy()
+        expect(data.title).toBeFalsy()
         return note.save(data).catch(err => {
-          // check data
-          expect(data.id).toBeTruthy()
-          expect(data.title).toBeFalsy()
           // check err
           expect(err.message).toMatch('error')
         })

@@ -1,8 +1,10 @@
 import shortid from 'shortid'
 
-const deleteItem = (obj, key) => {
+const deleteItem = (obj, keys) => {
   const newObj = Object.assign({}, obj)
-  delete newObj[key]
+  for (let key of keys) {
+    delete newObj[key]
+  }
   return newObj
 }
 
@@ -31,14 +33,16 @@ const dummyMemos = [
   * 特別の場合
   * 例
 
-ヘッケのL-函数はデデキントゼータ函数の自然な設定とリーマンゼータ函数の満たす函数等式に似た函数等式を持つ。`
+ヘッケのL-函数はデデキントゼータ函数の自然な設定とリーマンゼータ函数の満たす函数等式に似た函数等式を持つ。`,
+    createdAt: 1556818600856,
+    updatedAt: 1556818600856
   }
 ]
 
 const createDummy = Object.assign({}, dummyMemos[0], {id:null}) 
-const updateDummy = dummyMemos[0]
-const createErrDummy = deleteItem(createDummy, 'title')
-const updateErrDummy = deleteItem(updateDummy, 'title')
+const updateDummy = Object.assign({}, dummyMemos[1])
+const createErrDummy = deleteItem(createDummy, ['title'])
+const updateErrDummy = deleteItem(updateDummy, ['title'])
 
 export default {
   createDummy,
