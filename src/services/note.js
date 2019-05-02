@@ -12,9 +12,14 @@ const save = (data) => {
     }
     // save data
     const saveLocalStorage = (data) => {
-      const key = shortid.generate()
-      const value = JSON.stringify(data.pages)
-
+      // set timestamp
+      const now = Date.now()
+      data.updatedAt = now
+      if (data.id) data.createdAt = now
+      // set key and value
+      const key = data.id || shortid.generate()
+      const value = JSON.stringify(data)
+      // save
       localStorage.setItem(key, value)
     }
     // main
