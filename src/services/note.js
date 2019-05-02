@@ -1,8 +1,6 @@
-
 const save = (data) => {
   return new Promise((resolve, reject) => {
     // check data construnction
-    const dataKeys = ['date', 'pages']
     const pageKeys = ['title', 'tags', 'body']
     const checkKeys = (keys, data) => {
       const resultKeys = keys.filter((key) => { if (!data[key])  return key })
