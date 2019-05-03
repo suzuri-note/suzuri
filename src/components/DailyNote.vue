@@ -1,10 +1,10 @@
 <template>
     <div class="root">
         <div class="date text-muted mb-2">
-            {{ dailyNote.date }}
+            {{ date }}
         </div>
         <div class="pages">
-            <Page class="mb-4" v-for="memo in dailyNote.memos" :key="memo.id" :id="memo.id" :memoObject="memo"/>
+            <Page class="mb-4" v-for="memo in memos" :key="memo.id" :id="memo.id" :memoObject="memo"/>
         </div>
     </div>
 </template>
@@ -17,7 +17,8 @@ export default {
         Page
     },
     props: {
-        dailyNote: Object
+        date: String,
+        memos: Array
     }
 }
 </script>

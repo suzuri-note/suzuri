@@ -5,7 +5,7 @@
       <Editor/>
     </section>
     <section class="note px-3">
-      <DailyNote v-for="dailyNote in note" :key="dailyNote.date" :dailyNote="dailyNote"/>
+      <DailyNote v-for="(value, key) in note" :key="key" :date="key" :memos="value"/>
     </section>
     <section class="footer px-3">
       <hr>
@@ -20,7 +20,9 @@ import Editor from './components/Editor.vue'
 import Footer from './components/Footer.vue'
 import DailyNote from './components/DailyNote.vue'
 
-import note from "@/store/modules/note"
+import noteService from '@/services/note'
+import noteStore from '@/store/modules/note'
+import datelib from '@/lib/datelib'
 
 export default {
   name: 'app',
@@ -31,10 +33,22 @@ export default {
     DailyNote
   },
   computed: {
-    note: () => ([{
-      'date': '2019.05.03',
-      'memos': note.memos,
-    }])
+    note: () => noteStore.memos.reduce((accumulator, currentValue) => {
+      const yyyymmdd = datelib.formatFromUnixtime(currentValue.createdAt)
+      accumulator[yyyymmdd] = accumulator[yyyymmdd]? accumulator[yyyymmdd].concat(currentValue) : [currentValue]
+      return Object.assign({}, accumulator)
+    }, {})
+  },
+  created: function() {
+    noteService.list()
+      .then(result => {
+        if (result.status === "success") {
+          noteStore.replaceList(result.data)
+        }
+      })
+      .catch(err => {
+        alert(err)
+      })
   }
 }
 </script>

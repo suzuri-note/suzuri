@@ -1,6 +1,5 @@
 import { Mutation, MutationAction, Action, VuexModule, getModule, Module } from 'vuex-module-decorators';
 import store from '@/store';
-import dummy from '@/store/modules/note-dummy';
 
 export interface IMemoState {
     id: string;
@@ -17,12 +16,16 @@ export interface INoteState {
 @Module({ dynamic: true, store, name: 'note', namespaced: true})
 class Note extends VuexModule implements INoteState {
     // state
-    public memos = dummy.memos;
+    public memos: IMemoState[] = [];
 
     // actions
     @Action({ commit: 'SAVE' })
     public save(memo: IMemoState) {
         return memo;
+    }
+    @Action({ commit: 'REPLACE_LIST' })
+    public replaceList(memos: IMemoState[]) {
+        return memos;
     }
     @Action({ commit: 'REMOVE' })
     public remove(id: string) {
@@ -32,7 +35,20 @@ class Note extends VuexModule implements INoteState {
     // mutation
     @Mutation
     private SAVE(memo: IMemoState) {
-        this.memos = this.memos.concat(memo);
+        for (const i in this.memos) {
+            if (this.memos[i].id === memo.id) {
+                let newMemos = this.memos.concat()
+                newMemos[i] = memo
+                this.memos = newMemos
+                return
+            }
+        }
+        this.memos = this.memos.concat(memo)
+    }
+
+    @Mutation
+    private REPLACE_LIST(memos: IMemoState[]) {
+        this.memos = memos;
     }
 
     @Mutation
