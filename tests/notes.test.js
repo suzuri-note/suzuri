@@ -2,6 +2,7 @@ import note from '../src/services/note'
 import dummy from './dummy.js'
 
 describe('note', () => {
+  const wrongId = "wrongId"
   let memoId = ''
   // notes.save()
   describe('save()', () => {
@@ -76,7 +77,6 @@ describe('note', () => {
     })
     describe('is passed a wrong id', () => {
       it('returns error', () => {
-        const wrongId = "wrongId"
         expect.assertions(1)
         return note.get(wrongId).catch(err => {
           expect(err.message).toMatch('this id is not available.')
@@ -99,6 +99,25 @@ describe('note', () => {
         for(let i = 0; i < dataKeys.length; i++) {
           expect(result[0][dataKeys[i]]).toBeTruthy()
         }
+      })
+    })
+  })
+
+  describe('remove()', () => {
+    describe('is passed id', () => {
+      it('returns success status when success', () => {
+        expect.assertions(1)
+        return note.delete(memoId).then(result => {
+          expect(result.status).toBe('success')
+        })
+      })
+    })
+    describe('is passed a wrong id', () => {
+      it('returns error', () => {
+        expect.assertions(1)
+        return note.delete(wrongId).catch(err => {
+          expect(err.message).toMatch('this id is not available.')
+        })
       })
     })
   })
