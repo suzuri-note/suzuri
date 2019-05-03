@@ -1,6 +1,6 @@
 <template>
     <div class="root">
-        <div class="date mb-2">
+        <div class="date text-muted mb-2">
             {{ dailyNote.date }}
         </div>
         <div class="pages">
@@ -27,6 +27,5 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: $border;
 }
 </style>

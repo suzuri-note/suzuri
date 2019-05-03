@@ -9,9 +9,9 @@
                 <i class="fab fa-markdown editor-markdown ml-3"></i>
             </button>
         </div>
-        <div class="body mb-2">
-            <div v-show="preview" class="body-preview" :id="'body-preview-'+this.id" v-html="htmlBody"></div>
-            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="body" class="body-textarea" @keyup="onKeyupBody"></textarea>
+        <div class="body inner-container bg-surface mb-2">
+            <div v-show="preview" class="body-preview bg-surface" :id="'body-preview-'+this.id" v-html="htmlBody"></div>
+            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="body" class="body-textarea bg-surface" @keyup="onKeyupBody"></textarea>
         </div>
         <div class="footer">
             <button type="button" class="icon-btn" v-bind:disabled="editing">
@@ -50,8 +50,8 @@ export default {
         previewButtonClass: function () {
             return {
                 'icon-btn': true,
-                'icon-btn-border': !this.preview,
-                'icon-btn-secondary': this.preview
+                'icon-btn-muted': !this.preview,
+                'icon-btn-primary': this.preview
             }
         },
         doneButtonIconClass: function() {
@@ -60,11 +60,11 @@ export default {
                 'icon-large': true,
 
                 'fa-circle-notch': this.editing,
-                'icon-btn-border': this.editing,
+                'icon-btn-muted': this.editing,
                 'icon-rotate': this.editing,
 
                 'fa-check-circle': !this.editing,
-                'icon-btn-secondary': !this.editing,
+                'icon-btn-primary': !this.editing,
             }
         }
     },
@@ -135,7 +135,6 @@ export default {
     outline: none;
     border-radius: 0;
     background-color: transparent;
-    color: $text;
     padding: 0;
     width: 100%;
 }
@@ -145,18 +144,10 @@ export default {
     box-shadow: none;
 }
 
-.body {
-    border: 1px solid $border;
-    border-radius: .25rem;
-    padding: .5rem .75rem;
-    background-color: $surface;
-}
 .body-textarea {
     overflow: hidden;   
     outline: none;
     border: none;
-    background-color: transparent;
-    color: $text;
     resize: none;
     width: 100%;
     height: auto;
