@@ -1,0 +1,115 @@
+@import "./_variables.scss";
+@import "./_mixins.scss";
+@import "./dropdown.scss";
+@import "./button.scss";
+@import "./icon.scss";
+
+// body
+body {
+  background-color: $bg-light !important;
+  color: $on-bg-light !important;
+}
+
+// background colors
+.bg-dark {
+  background-color: $bg-dark;
+  color: $on-bg-dark;
+}
+.bg-light {
+  background-color: $bg-light;
+  color: $on-bg-light;
+}
+
+// surface color
+.bg-surface {
+  background-color: $surface;
+  color: $on-surface;
+}
+.text-on-surface {
+  color: $on-surface;
+}
+.text-on-surface:hover {
+  color: $on-surface;
+}
+
+// brand color
+.bg-brand {
+  background-color: $brand;
+  color: $on-brand;
+}
+.text-brand {
+  color: $brand;
+}
+.icon-brand {
+  color: $brand;
+}
+
+// link color
+a {
+  color: $link;
+}
+.bg-link {
+  background-color: $link;
+  color: $on-link;
+}
+.btn-link {
+  color: $on-link;
+  background-color: $link;
+  border-color: transparent;
+}
+.btn-link:hover,
+.btn-link:active {
+  color: $on-link;
+  background-color: $link-variant;
+  border-color: transparent;
+}
+.btn-link-outlined {
+  color: $link;
+  background-color: transparent;
+  border-color: $link;
+}
+.btn-link-outlined:hover,
+.btn-link-outlined:active {
+  color: $link-variant;
+  background-color: transparent;
+  border-color: $link-variant;
+}
+.icon-btn-link {
+  color: $link;
+}
+.icon-btn-link:hover,
+.icon-btn-link:active {
+  color: $link-variant;
+}
+
+// error color
+.text-error {
+  color: $error;
+}
+.text-error:hover {
+  color: $error;
+}
+
+// muted color
+.text-muted {
+  color: $muted;
+}
+.text-muted:hover {
+  color: $muted;
+}
+
+// border color
+hr {
+  border-top: 1px solid $border;
+}
+
+.container {
+  border: 1px solid $border;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+.inner-container {
+  border: 1px solid $border;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}

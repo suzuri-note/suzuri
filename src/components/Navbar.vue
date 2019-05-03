@@ -1,11 +1,15 @@
 <template>
-    <nav class="navbar navbar-light bg-primary">
-      <a href="#" class="navbar-brand text-secondary">SUZURI</a>
-      <i class="fas fa-search text-secondary"></i>
+    <nav class="navbar bg-dark">
+      <a href="#" class="navbar-brand text-brand">SUZURI</a>
+      <i class="fas fa-search icon-brand"></i>
     </nav>
 </template>
 
-<style>
+<style scoped>
+.navbar {
+  z-index: 1000;
+}
+
 .navbar-brand {
     font-family: 'HelveticaNeue-CondensedBold', 'Helvetica Neue';
     font-size: 1.5rem;

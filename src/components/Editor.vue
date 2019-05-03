@@ -1,19 +1,19 @@
 <template>
     <div class="root">
-        <div class="editor-header">
-            <div class="editor-title">
-                <input type="text" class="form-control title text-muted" v-model="title" v-bind:placeholder="titlePlaceholder">
+        <div class="header">
+            <div class="title">
+                <div v-show="preview">{{ title }}</div>
+                <input v-show="!preview" v-model="title" class="title-input" :placeholder="titlePlaceholder" @keyup="onKeyupTitle"/>
             </div>
             <button type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
                 <i class="fab fa-markdown editor-markdown ml-3"></i>
             </button>
         </div>
-        
-        <div class="form-group bg-surface">
-            <Page v-if="preview" :body="body" class="editor-content"/>
-            <textarea v-else name="" id="" class="form-control editor-content" v-model="body" @keyup="onKeyup"></textarea>
+        <div class="body inner-container bg-surface mb-2">
+            <div v-show="preview" class="body-preview bg-surface" :id="'body-preview-'+this.id" v-html="htmlBody"></div>
+            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="body" class="body-textarea bg-surface" @keyup="onKeyupBody"></textarea>
         </div>
-        <div class="editor-footer">
+        <div class="footer">
             <button type="button" class="icon-btn" v-bind:disabled="editing">
                 <i v-bind:class="doneButtonIconClass"></i>  
             </button>
@@ -22,30 +22,36 @@
 </template>
 
 <script>
-import Page from './Page.vue'
+import MarkdownIt from 'markdown-it'
+
+const md = new MarkdownIt()
+
 export default {
-    components: {
-        Page
-    },
     data: () => ({
+        id: "new",
         title: "",
-        titlePlaceholder: "",
         body: "",
+        lastSavedTitle: "",
         lastSavedBody: "",
+        titlePlaceholder: "",
         timeout: null,
         editing: false,
         preview: false
     }),
     created: function() {
+        // initialize
         const today = new Date()
         this.titlePlaceholder = today.getFullYear() + "." + today.getMonth() + "." + today.getDate()
     },
     computed: {
+        htmlBody: function() {
+            return md.render(this.body) 
+        },
         previewButtonClass: function () {
             return {
                 'icon-btn': true,
-                'icon-btn-border': !this.preview,
-                'icon-btn-secondary': this.preview
+                'icon-btn-muted': !this.preview,
+                'icon-btn-primary': this.preview
             }
         },
         doneButtonIconClass: function() {
@@ -54,20 +60,35 @@ export default {
                 'icon-large': true,
 
                 'fa-circle-notch': this.editing,
-                'icon-btn-border': this.editing,
+                'icon-btn-muted': this.editing,
                 'icon-rotate': this.editing,
 
                 'fa-check-circle': !this.editing,
-                'icon-btn-secondary': !this.editing,
+                'icon-btn-primary': !this.editing,
             }
         }
     },
     methods: {
         onClickedPreview: function() {
+            if (this.title === "") {
+                this.title = this.titlePlaceholder
+            }
             this.preview = !this.preview
+            if (!this.preview) {
+                this.$nextTick(function() {
+                    this.adjustBodyHeight() // 本文textareaの高さ調節
+                })
+            }
         },
-        onKeyup: function() {
-            if (this.body !== this.lastSavedBody) {
+        onKeyupBody: function() {
+            this.adjustBodyHeight() // 本文textareaの高さ調節
+            this.autosave() // localstorageへの保存
+        },
+        onKeyupTitle: function() {
+            this.autosave() // localstorageへの保存
+        },
+        autosave: function() {
+            if (this.body !== this.lastSavedBody || this.title !== this.lastSavedTitle) {
                 if (this.timeout) {
                     clearTimeout(this.timeout)
                 }
@@ -75,10 +96,20 @@ export default {
                 var self = this
                 this.timeout = setTimeout(function(){
                     console.log('saved: ' + self.body)
+                    self.lastSavedTitle = self.title
                     self.lastSavedBody = self.body
                     self.editing = false
                 }, 1500)
             }
+        },
+        adjustBodyHeight: function() {
+            let bodyTextarea = document.getElementById('body-textarea-'+this.id)
+            bodyTextarea.style.height = '1px'
+            bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px'
+
+            let bodyPreview = document.getElementById('body-preview-'+this.id)
+            bodyPreview.style.height = '1px'
+            bodyPreview.style.height = bodyTextarea.scrollHeight + 'px'
         }
     }
 }
@@ -86,52 +117,52 @@ export default {
 
 
 <style scoped lang="scss">
-input.title {
-    font-size: 1.2em;
+.root {
+    text-align: left;
+}
+.header {
+    display: flex;
+    flex-direction: row;
+    min-height: 2.0rem;
+}
+.title {
+    font-size: 1.2rem;
+    padding: .5rem .75rem;
+    flex-grow: 1;
+}
+.title-input {
     border: none;
+    outline: none;
     border-radius: 0;
     background-color: transparent;
+    padding: 0;
+    width: 100%;
 }
-input.title:focus {
+.title-input:hover, .title-input:active {
     outline: 0;
     border: none;
     box-shadow: none;
 }
-.root {
-    display: flex;
-    flex-direction: column;
+
+.body-textarea {
+    overflow: hidden;   
+    outline: none;
+    border: none;
+    resize: none;
+    width: 100%;
+    height: auto;
+    min-height: 10rem;
+    padding: 0;
 }
-.editor-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+.body-preview {
+    min-height: 10rem;
+    overflow: scroll;
 }
-.editor-content {
-    min-height: 20rem;
-}
-.editor-footer {
+
+
+.footer {
     display: flex;
     justify-content: flex-end;
-}
-.editor-title {
-    flex-grow: 1;
-}
-.editor-markdown {
-    display: block;
-}
-.preview {
-    text-align: left;
-    min-height: 20rem;
-    padding: .5rem 1.0rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #F8FBF8;
-    background-clip: padding-box;
-    border: 1px solid $border;
-    border-radius: .25rem;
 }
 .icon-rotate {
     animation: rotate 1s;

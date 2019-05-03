@@ -1,0 +1,38 @@
+.btn-primary {
+  color: $brand !important;
+  background-color: transparent !important;
+  border-color: $brand !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.btn-primary:hover,
+.btn-primary:active {
+  color: $on-brand !important;
+  background-color: $brand-variant !important;
+  border-color: $brand-variant !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.btn-secondary {
+  color: $brand !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.btn-secondary:hover,
+.btn-secondary:active {
+  color: $brand-variant !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.icon-btn-primary {
+  color: $brand;
+}
+.icon-btn-primary:hover,
+.icon-btn-primary:active {
+  color: $brand-variant;
+}
