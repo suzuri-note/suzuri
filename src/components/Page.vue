@@ -14,7 +14,7 @@
             <div v-show="optionOpen" class="dropdown-menu">
                 <a v-show="!editMode" href="" @click.prevent="onClickEdit" class="dropdown-item">Edit</a>
                 <a href="" @click.prevent="" class="dropdown-item">Copy URL</a>
-                <a href="" @click.prevent="" class="dropdown-item text-error">Delete</a>
+                <a href="" @click.prevent="onClickedDelete" class="dropdown-item text-error">Delete</a>
             </div>
         </div>
         <div v-if="editMode" class="content">
@@ -33,8 +33,10 @@
 
 <script>
 import MarkdownIt from 'markdown-it'
+import note from "@/store/modules/note"
 
 const md = new MarkdownIt()
+
 
 export default {
     props: {
@@ -114,6 +116,11 @@ export default {
                 textarea.style.height = '1px'
                 textarea.style.height = textarea.scrollHeight + 'px'                
             }
+        },
+        onClickedDelete: function() {
+            note.remove(this.memoObject.id)
+            this.optionOpen = false
+            console.log('Deleted: ' + this.memoObject.id)
         }
     },
     created: function() {

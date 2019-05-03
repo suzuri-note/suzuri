@@ -20,7 +20,7 @@ import Editor from './components/Editor.vue'
 import Footer from './components/Footer.vue'
 import DailyNote from './components/DailyNote.vue'
 
-import DummyData from './store/dummy.js'
+import note from "@/store/modules/note"
 
 export default {
   name: 'app',
@@ -30,9 +30,12 @@ export default {
     Footer,
     DailyNote
   },
-  data: () => ({
-    note: DummyData.note
-  }),
+  computed: {
+    note: () => ([{
+      'date': '2019.05.03',
+      'memos': note.memos,
+    }])
+  }
 }
 </script>
 
@@ -69,8 +72,6 @@ section.footer {
   max-width: 680px;
   margin-bottom: 1rem;
 }
-
-
 </style>
 
 
