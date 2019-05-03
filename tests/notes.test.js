@@ -107,7 +107,7 @@ describe('note', () => {
     describe('is passed id', () => {
       it('returns success status when success', () => {
         expect.assertions(1)
-        return note.delete(memoId).then(result => {
+        return note.remove(memoId).then(result => {
           expect(result.status).toBe('success')
         })
       })
@@ -115,7 +115,7 @@ describe('note', () => {
     describe('is passed a wrong id', () => {
       it('returns error', () => {
         expect.assertions(1)
-        return note.delete(wrongId).catch(err => {
+        return note.remove(wrongId).catch(err => {
           expect(err.message).toMatch('this id is not available.')
         })
       })

@@ -84,8 +84,31 @@ const list = () => {
   })
 }
 
+const remove = (id) => {
+  return new Promise((resolve, reject) => {
+    // remove Data
+    const removeLocalStorage = (id) => {
+      if (Object.keys(localStorage).indexOf(id) == -1) {
+        throw new Error('this id is not available.')
+      }
+      localStorage.removeItem(id)
+      return id
+    }
+    try {
+      const res = removeLocalStorage(id)
+      resolve({
+        status: "success",
+        data: res
+      })
+    } catch(err) {
+      reject(err)
+    }
+  })
+}
+
 export default {
-  save: save,
-  get: get,
-  list: list
+  save,
+  get,
+  list,
+  remove,
 }
