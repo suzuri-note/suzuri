@@ -2,12 +2,13 @@ import note from '../src/services/note'
 import dummy from './dummy.js'
 
 describe('note', () => {
+  let memoId = ''
   // notes.save()
   describe('save()', () => {
     // create
     describe('isn\'t passed id', () => {
       it('returns success status when success', () => {
-        expect.assertions(4)
+        expect.assertions(5)
         const data = dummy.createDummy
         // check data
         expect(data.id).toBeFalsy()
@@ -15,6 +16,8 @@ describe('note', () => {
         return note.save(data).then(result => {
           // check result
           expect(result.data.updatedAt).toBe(result.data.createdAt)
+          expect(result.data.id).toBeTruthy()
+          memoId = result.data.id
           expect(result.status).toBe('success')
         })
       })
@@ -35,7 +38,8 @@ describe('note', () => {
     describe('is passed id', () => {
       it('returns success status when success', () => {
         expect.assertions(4)
-        const data = dummy.updateDummy
+        let data = dummy.updateDummy
+        data.id = memoId
         // check data
         expect(data.id).toBeTruthy()
         expect(data.title).toBeTruthy()
@@ -48,7 +52,8 @@ describe('note', () => {
 
       it('returns an error when wrong arguments', () => {
         expect.assertions(3)
-        const data = dummy.updateErrDummy
+        let data = dummy.updateErrDummy
+        data.id = memoId
         // check data
         expect(data.id).toBeTruthy()
         expect(data.title).toBeFalsy()
@@ -59,4 +64,16 @@ describe('note', () => {
       })
     })
   })
+
+  // describe('get()', () => {
+  //   describe('is passed id', () => {
+  //     it('returns one data', () => {
+  //       expect.assertions(1)
+  //       return note.get(memoId).then(result => {
+  //         expect(result.title).toBe()
+  //       })
+  //     })
+  //   })
+  //   describe('isn\'t passed id', () => {})
+  // })
 })
