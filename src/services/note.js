@@ -65,7 +65,23 @@ const get = (id) => {
   })
 }
 const list = () => {
-  return null
+  return new Promise((resolve, reject) => {
+    // list Data
+    const listLocalStorage = () => {
+      const memos = Object.keys(localStorage).map((key) => {
+        let data = JSON.parse(localStorage.getItem(key))
+        data.id = key
+        return data
+      })
+      return memos
+    }
+    try {
+      const res = listLocalStorage()
+      resolve(res)
+    } catch(err) {
+      reject(err)
+    }
+  })
 }
 
 export default {

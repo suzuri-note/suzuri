@@ -89,7 +89,16 @@ describe('note', () => {
     it('returns array object', () => {
       expect.assertions(1)
       return note.list().then(result => {
-        expect(result.isArray).toTruthy()
+        expect(Array.isArray(result)).toBeTruthy()
+      })
+    })
+    it('returns data which data structure is correct', () => {
+      const dataKeys = ['id', 'title', 'body', 'createdAt', 'updatedAt']
+      expect.assertions(dataKeys.length)
+      return note.list().then(result => {
+        for(let i = 0; i < dataKeys.length; i++) {
+          expect(result[0][dataKeys[i]]).toBeTruthy()
+        }
       })
     })
   })
