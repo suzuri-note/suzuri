@@ -65,15 +65,22 @@ describe('note', () => {
     })
   })
 
-  // describe('get()', () => {
-  //   describe('is passed id', () => {
-  //     it('returns one data', () => {
-  //       expect.assertions(1)
-  //       return note.get(memoId).then(result => {
-  //         expect(result.title).toBe()
-  //       })
-  //     })
-  //   })
-  //   describe('isn\'t passed id', () => {})
-  // })
+  describe('get()', () => {
+    describe('is passed id', () => {
+      it('returns one data', () => {
+        expect.assertions(1)
+        return note.get(memoId).then(result => {
+          expect(result.title).toBe("数体や大域函数体")
+        })
+      })
+    })
+    describe('is passed a wrong id', () => {
+      it('returns error', () => {
+        expect.assertions(1)
+        return note.get().catch(err => {
+          expect(err.message).toMatch('this id is not available.')
+        })
+      })
+    })
+  })
 })

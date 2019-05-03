@@ -12,13 +12,17 @@ const save = (data) => {
     }
     // save data
     const saveLocalStorage = (data) => {
-      // set timestamp
       const now = Date.now()
       data.updatedAt = now
-      // set id
-      if (!data.id) {
-        data.id = shortid.generate()
+      // create
+      if(!data.id) {
+        data.id= shortid.generate()
         data.createdAt = now
+      }
+      // update
+      else {
+        let originData = JSON.parse(localStorage.getItem(data.id))
+        data = Object.assign(originData, data)
       }
       // create data for localStorage
       const key = data.id
@@ -33,7 +37,7 @@ const save = (data) => {
     // main
     try {
       checkKeys(data, required)
-      const res= saveLocalStorage(data)
+      const res = saveLocalStorage(data)
       resolve({
         status: "success",
         data: res
@@ -43,10 +47,24 @@ const save = (data) => {
     }
   })
 }
-const get= () => {
-  return null
+const get = (id) => {
+  return new Promise((resolve, reject) => {
+    // get Data
+    const getLocalStorage = (id) => {
+      let data = JSON.parse(localStorage.getItem(id))
+      if (!data) throw new Error("this id is not available.")
+      data.id = id
+      return data
+    }
+    try {
+      const res = getLocalStorage(id)
+      resolve(res)
+    } catch(err) {
+      reject(err)
+    }
+  })
 }
-const list= () => {
+const list = () => {
   return null
 }
 
