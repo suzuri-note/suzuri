@@ -84,4 +84,13 @@ describe('note', () => {
       })
     })
   })
+
+  describe('list()', () => {
+    it('returns array object', () => {
+      expect.assertions(1)
+      return note.list().then(result => {
+        expect(result.isArray).toTruthy()
+      })
+    })
+  })
 })
