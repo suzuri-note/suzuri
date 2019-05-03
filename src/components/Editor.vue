@@ -156,7 +156,6 @@ export default {
 }
 .body-preview {
     min-height: 10rem;
-    overflow: scroll;
 }
 
 
