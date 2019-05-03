@@ -76,8 +76,9 @@ describe('note', () => {
     })
     describe('is passed a wrong id', () => {
       it('returns error', () => {
+        const wrongId = "wrongId"
         expect.assertions(1)
-        return note.get().catch(err => {
+        return note.get(wrongId).catch(err => {
           expect(err.message).toMatch('this id is not available.')
         })
       })
