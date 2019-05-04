@@ -1,5 +1,6 @@
 import shortid from 'shortid'
 
+const prefix = 'SuzuriMemoId.'
 const save = (data) => {
   return new  Promise((resolve, reject) => {
     // check data construnction
@@ -16,7 +17,7 @@ const save = (data) => {
       data.updatedAt = now
       // create
       if(!data.id) {
-        data.id= shortid.generate()
+        data.id = prefix + shortid.generate()
         data.createdAt = now
       }
       // update
@@ -68,7 +69,10 @@ const list = () => {
   return new Promise((resolve, reject) => {
     // list Data
     const listLocalStorage = () => {
-      const memos = Object.keys(localStorage).map((key) => {
+      const correctKeys = Object.keys(localStorage).filter((key) => {
+        return key.startsWith(prefix)
+      })
+      const memos = correctKeys.map((key) => {
         let data = JSON.parse(localStorage.getItem(key))
         data.id = key
         return data
