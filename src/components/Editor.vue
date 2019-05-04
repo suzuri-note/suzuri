@@ -100,7 +100,7 @@ export default {
                     self.lastSavedTitle = self.title
                     self.lastSavedBody = self.body
                     self.editing = false
-                }, 1500)
+                }, 250)
             }
         },
         adjustBodyHeight: function() {
