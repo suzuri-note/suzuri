@@ -33,11 +33,7 @@ export default {
     DailyNote
   },
   computed: {
-    note: () => noteStore.memos.reduce((accumulator, currentValue) => {
-      const yyyymmdd = datelib.formatFromUnixtime(currentValue.createdAt)
-      accumulator[yyyymmdd] = accumulator[yyyymmdd]? accumulator[yyyymmdd].concat(currentValue) : [currentValue]
-      return Object.assign({}, accumulator)
-    }, {})
+    note: () => noteStore.dailyNote
   },
   created: function() {
     noteService.list()

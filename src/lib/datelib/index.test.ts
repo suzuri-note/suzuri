@@ -1,9 +1,9 @@
-import datelib from '.';
+import datelib from '@/lib/datelib';
 
-test('', () => {
+test('datelib.format', () => {
     expect(datelib.format(new Date(1556813426000))).toBe('2019.05.03');
 })
 
-test('', () => {
+test('datelib.formatFromUnixtime(', () => {
     expect(datelib.formatFromUnixtime(1556813426000)).toBe('2019.05.03');
 })
