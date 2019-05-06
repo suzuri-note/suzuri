@@ -14,12 +14,12 @@
             <div v-show="optionOpen" class="dropdown-menu">
                 <a v-show="!editMode" href="" @click.prevent="onClickEdit" class="dropdown-item">Edit</a>
                 <a href="" @click.prevent="" class="dropdown-item">Copy URL</a>
-                <a href="" @click.prevent="" class="dropdown-item text-error">Delete</a>
+                <a href="" @click.prevent="onClickedDelete" class="dropdown-item text-error">Delete</a>
             </div>
         </div>
         <div v-if="editMode" class="content">
             <div v-if="preview" v-html="htmlDataBody" class="content-textarea inner-container bg-surface"></div>
-            <textarea v-else v-model="body" :id="'textarea-'+id" class="content-textarea inner-container bg-surface" @keyup="onKeyupBody"></textarea>
+            <textarea v-else v-model="body" :id="'textarea-'+this.memoObject.id" class="content-textarea inner-container bg-surface" @keyup="onKeyupBody"></textarea>
             <div class="content-buttons mt-2">
                 <button type="button" class="btn btn-secondary mr-2" @click="onClickedCancel">Cancel</button>
                 <button type="button" class="btn btn-primary" @click="onClickedSave">Save</button>
@@ -27,14 +27,18 @@
         </div>
         <div v-else class="content">
             <div v-html="htmlBody"></div>
+            <p>`[DEBUG] id:{{ memoObject.id }}, createdAt: {{ memoObject.createdAt }}, updatedAt: {{ memoObject.updatedAt }}`</p>
         </div>
     </div>
 </template>
 
 <script>
-import MarkdownIt from 'markdown-it'
+import noteService from '@/services/note'
+import noteStore from '@/store/modules/note'
 
+import MarkdownIt from 'markdown-it'
 const md = new MarkdownIt()
+
 
 export default {
     props: {
@@ -103,17 +107,43 @@ export default {
             this.preview = false
         },
         onClickedSave: function() {
-            return
+            noteService.save({
+                id: this.memoObject.id,
+                title: this.title? this.title : this.titlePlaceholder,
+                body: this.body
+            })
+            .then(result => {
+                if (result.status === "success") {
+                    noteStore.save(result.data)
+                    this.editMode = false
+                    this.preview = false
+                } 
+            })
+            .catch(err => {
+                alert(err)
+            })
         },
         onKeyupBody: function() {
             this.adjustBodyHeight()
         },
         adjustBodyHeight: function() {
             if (this.editMode) {
-                let textarea = document.getElementById('textarea-'+this.id)
+                let textarea = document.getElementById('textarea-'+this.memoObject.id)
                 textarea.style.height = '1px'
                 textarea.style.height = textarea.scrollHeight + 'px'                
             }
+        },
+        onClickedDelete: function() {
+            noteService.remove(this.memoObject.id)
+                .then(result => {
+                    if (result.status === 'success') {
+                        note.remove(result.data.id)
+                        this.optionOpen = false
+                    }
+                })
+                .catch(err => {
+                    alert(err)
+                })
         }
     },
     created: function() {

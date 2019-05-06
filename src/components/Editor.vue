@@ -14,7 +14,7 @@
             <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="body" class="body-textarea bg-surface" @keyup="onKeyupBody"></textarea>
         </div>
         <div class="footer">
-            <button type="button" class="icon-btn" v-bind:disabled="editing">
+            <button type="button" class="icon-btn" @click="onClickedDone" v-bind:disabled="editing">
                 <i v-bind:class="doneButtonIconClass"></i>  
             </button>
         </div>
@@ -22,8 +22,11 @@
 </template>
 
 <script>
-import MarkdownIt from 'markdown-it'
+import noteService from '@/services/note'
+import noteStore from '@/store/modules/note'
+import datelib from '@/lib/datelib'
 
+import MarkdownIt from 'markdown-it'
 const md = new MarkdownIt()
 
 export default {
@@ -39,9 +42,7 @@ export default {
         preview: false
     }),
     created: function() {
-        // initialize
-        const today = new Date()
-        this.titlePlaceholder = today.getFullYear() + "." + today.getMonth() + "." + today.getDate()
+        this.titlePlaceholder = datelib.format(new Date())
     },
     computed: {
         htmlBody: function() {
@@ -99,7 +100,7 @@ export default {
                     self.lastSavedTitle = self.title
                     self.lastSavedBody = self.body
                     self.editing = false
-                }, 1500)
+                }, 250)
             }
         },
         adjustBodyHeight: function() {
@@ -110,6 +111,23 @@ export default {
             let bodyPreview = document.getElementById('body-preview-'+this.id)
             bodyPreview.style.height = '1px'
             bodyPreview.style.height = bodyTextarea.scrollHeight + 'px'
+        },
+        onClickedDone: function() {
+            noteService.save({
+                id: "",
+                title: this.title? this.title : this.titlePlaceholder,
+                body: this.body
+            })
+            .then(result => {
+                if (result.status === "success") {
+                    noteStore.save(result.data)
+                    this.title = ""
+                    this.body = ""
+                } 
+            })
+            .catch(err => {
+                alert(err)
+            })
         }
     }
 }
