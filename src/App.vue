@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <Navbar class="header-layout"/>
+    <div class="global-navigation">
+      <Navbar/>
+      <StatusBar/>
+    </div>
     <section class="editor px-3 my-2">
       <Editor/>
     </section>
@@ -15,10 +18,11 @@
 </template>
 
 <script>
-import Navbar from './components/Navbar.vue'
-import Editor from './components/Editor.vue'
-import Footer from './components/Footer.vue'
-import DailyNote from './components/DailyNote.vue'
+import Navbar from '@/components/Navbar.vue'
+import StatusBar from '@/components/StatusBar.vue'
+import Editor from '@/components/Editor.vue'
+import Footer from '@/components/Footer.vue'
+import DailyNote from '@/components/DailyNote.vue'
 
 import noteService from '@/services/note'
 import noteStore from '@/store/modules/note'
@@ -28,6 +32,7 @@ export default {
   name: 'app',
   components: {
     Navbar,
+    StatusBar,
     Editor,
     Footer,
     DailyNote
@@ -62,9 +67,10 @@ export default {
   align-items: center;
 }
 
-.header-layout {
+.global-navigation {
   position: fixed;
   width: 100vw;
+  z-index: 1000;
 }
 section.editor {
   min-height: 100vh;

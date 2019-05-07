@@ -115,3 +115,19 @@ hr {
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
 }
+
+// status color
+.bg-info {
+  background-color: $bg-info!important;
+  color: $on-info!important;
+}
+
+.bg-warning {
+  background-color: $bg-warning!important;
+  color: $on-warning!important;
+}
+
+.bg-error {
+  background-color: $bg-error!important;
+  color: $on-error!important;
+}
