@@ -48,7 +48,9 @@ export default {
         }
       })
       .catch(err => {
-        alert(err)
+        const level = StatusLevel.Warning
+        const message = err
+        appStore.setStatus({ level, message })
       })
   }
 }

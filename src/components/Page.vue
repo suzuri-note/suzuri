@@ -35,6 +35,7 @@
 <script>
 import noteService from '@/services/note'
 import noteStore from '@/store/modules/note'
+import appStore, { StatusLevel } from '@/store/modules/app'
 
 import MarkdownIt from 'markdown-it'
 const md = new MarkdownIt()
@@ -120,7 +121,9 @@ export default {
                 } 
             })
             .catch(err => {
-                alert(err)
+                const level = StatusLevel.Error
+                const message = err
+                appStore.setStatus({ level, message })
             })
         },
         onKeyupBody: function() {
@@ -142,7 +145,9 @@ export default {
                     }
                 })
                 .catch(err => {
-                    alert(err)
+                    const level = StatusLevel.Error
+                    const message = err
+                    appStore.setStatus({ level, message })
                 })
         }
     },
