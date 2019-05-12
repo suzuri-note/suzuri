@@ -37,46 +37,24 @@ class App extends VuexModule implements IAppState {
     @Action
     public setStatus(status: IStatus): void {
         clearTimeout(this.status.timeoutID); // 自動非表示のためのタイマーを無効化
-        this.SET_STATUS(status);
-        setTimeout(() => {
-            this.showStatusBar();
-        }, 300);
-        this.showStatusBar();
-        switch (status.level) {
-            case StatusLevel.Info:
-                // 3秒後に自動非表示
-                this.status.timeoutID = setTimeout(() => {
-                    this.resetStatus()
-                }, 3000);
-                break;
-            case StatusLevel.Warning:
-                // 5秒後に自動非表示
-                this.status.timeoutID = setTimeout(() => {
-                    this.resetStatus()
-                }, 5000);
-                break;
-            case StatusLevel.Error:
-            default:
-                break;
+
+        this.SET_STATUS(status); // StatusBarに値が入る
+        this.SHOW_STATUS_BAR(); // StatusBarが表示される
+
+        if (status.level === StatusLevel.Info) {
+            // 3秒後に自動非表示
+            this.status.timeoutID = setTimeout(() => {
+                this.resetStatus()
+            }, 3000);
         }
     }
 
     @Action
     public resetStatus(): void {
-        this.hideStatusBar();
-        setTimeout(() => {
-            this.RESET_STATUS();
+        this.HIDE_STATUS_BAR(); // StatusBarが300ms秒かけて隠れる（ref. StatusBarのhidden class）
+        setTimeout(()=> {
+            this.RESET_STATUS(); // 300ms秒後にStatusBarから値が消える
         }, 300);
-    }
-
-    @Action
-    public showStatusBar(): void {
-        this.SHOW_STATUS_BAR();
-    }
-
-    @Action
-    public hideStatusBar(): void {
-        this.HIDE_STATUS_BAR();
     }
 
     @Mutation

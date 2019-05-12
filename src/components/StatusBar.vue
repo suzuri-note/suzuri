@@ -16,7 +16,7 @@ export default Vue.extend({
         StatusBarClass: function() {
             return {
                 statusbar: true,
-                hidden: appStore.status.level === StatusLevel.None,
+                hidden: appStore.statusbar.hidden,
                 'bg-info': appStore.status.level === StatusLevel.Info,
                 'bg-warning': appStore.status.level === StatusLevel.Warning,
                 'bg-error': appStore.status.level === StatusLevel.Error,
@@ -43,6 +43,7 @@ export default Vue.extend({
     transition: transform 300ms 0s ease;
     overflow: hidden;
     position: relative;
+    transform: translateY(0%);
 }
 
 .status-message {
