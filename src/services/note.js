@@ -31,7 +31,7 @@ const save = (data) => {
       delete valueObj.id
       const value = JSON.stringify(valueObj)
       // save
-      localStorage.setItem(key, value)
+      localStorage.setItem(prefix + key, value)
       // return value
       return data
     }
@@ -52,7 +52,7 @@ const get = (id) => {
   return new Promise((resolve, reject) => {
     // get Data
     const getLocalStorage = (id) => {
-      let data = JSON.parse(localStorage.getItem(id))
+      let data = JSON.parse(localStorage.getItem(prefix + id))
       if (!data) throw new Error("this id is not available.")
       data.id = id
       return data
@@ -92,10 +92,10 @@ const remove = (id) => {
   return new Promise((resolve, reject) => {
     // remove Data
     const removeLocalStorage = (id) => {
-      if (Object.keys(localStorage).indexOf(id) == -1) {
+      if (Object.keys(localStorage).indexOf(prefix + id) == -1) {
         throw new Error('this id is not available.')
       }
-      localStorage.removeItem(id)
+      localStorage.removeItem(prefix + id)
       return id
     }
     try {
