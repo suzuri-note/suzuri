@@ -40,7 +40,7 @@ export default Vue.extend({
     padding: 0.2rem 0.75rem;
     font-size: 0.9rem;
     line-height: 1.0rem;
-    transition: all 300ms 0s ease;
+    transition: transform 300ms 0s ease;
     overflow: hidden;
     position: relative;
 }

@@ -16,6 +16,7 @@ export interface IAppState {
 export interface IStatus {
     level: StatusLevel;
     message: string;
+    timeoutID?: number;
 }
 
 export interface IStatusBar {
@@ -27,6 +28,7 @@ class App extends VuexModule implements IAppState {
     public status: IStatus = {
         level: StatusLevel.None,
         message: '',
+        timeoutID: undefined,
     };
     public statusbar: IStatusBar = {
         hidden: false,
@@ -34,6 +36,7 @@ class App extends VuexModule implements IAppState {
 
     @Action
     public setStatus(status: IStatus): void {
+        clearTimeout(this.status.timeoutID); // 自動非表示のためのタイマーを無効化
         this.SET_STATUS(status);
         setTimeout(() => {
             this.showStatusBar();
@@ -41,12 +44,14 @@ class App extends VuexModule implements IAppState {
         this.showStatusBar();
         switch (status.level) {
             case StatusLevel.Info:
-                setTimeout(() => {
+                // 3秒後に自動非表示
+                this.status.timeoutID = setTimeout(() => {
                     this.resetStatus()
                 }, 3000);
                 break;
             case StatusLevel.Warning:
-                setTimeout(() => {
+                // 5秒後に自動非表示
+                this.status.timeoutID = setTimeout(() => {
                     this.resetStatus()
                 }, 5000);
                 break;
