@@ -1,12 +1,12 @@
 <template>
-    <div :class="StatusBarClass">
+    <div :class="StatusBarClass" v-click-outside="onClickedOutside">
         <div class="status-message">{{ statueMessage }}</div>
-        <button class="icon-btn" @click="onClickedClose"><i class="fas fa-times"></i></button>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import ClickOutside from 'vue-click-outside';
 
 import appStore, { StatusLevel } from '@/store/modules/app';
 
@@ -24,9 +24,14 @@ export default Vue.extend({
         },
     },
     methods: {
-        onClickedClose: function() {
-            appStore.resetStatus()
+        onClickedOutside: function() {
+            if (!appStore.statusbar.hidden) {
+                appStore.resetStatus();
+            }
         },
+    },
+    directives: {
+        ClickOutside,
     },
 })
 </script>

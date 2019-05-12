@@ -11,6 +11,7 @@ test('setStatus', async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     expect((appStore.status.level === StatusLevel.Info) && (appStore.status.message === message)).toBe(true);
+    expect(appStore.statusbar.hidden).toBe(false);
 });
 
 test('resetStatus', async () => {
@@ -25,4 +26,5 @@ test('resetStatus', async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     expect((appStore.status.level === StatusLevel.None) && (appStore.status.message === '')).toBe(true);
+    expect(appStore.statusbar.hidden).toBe(true);
 });
