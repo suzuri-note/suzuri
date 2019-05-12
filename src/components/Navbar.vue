@@ -5,14 +5,12 @@
       </div>
       <div class="navbar-menu">
         <button type="button" class="icon-btn icon-btn-primary"><i class="fas fa-search"></i></button>
-        
       </div>
     </nav>
 </template>
 
 <style scoped lang="scss">
 .navbar {
-  z-index: 1000;
   position: relative;
   display: -ms-flexbox;
   display: flex;

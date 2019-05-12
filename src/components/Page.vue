@@ -35,6 +35,7 @@
 <script>
 import noteService from '@/services/note'
 import noteStore from '@/store/modules/note'
+import appStore, { StatusLevel } from '@/store/modules/app'
 
 import MarkdownIt from 'markdown-it'
 const md = new MarkdownIt()
@@ -117,10 +118,15 @@ export default {
                     noteStore.save(result.data)
                     this.editMode = false
                     this.preview = false
+                    const level = StatusLevel.Info
+                    const message = 'Successfully Saved'
+                    appStore.setStatus({ level, message })
                 }
             })
             .catch(err => {
-                alert(err)
+                const level = StatusLevel.Error
+                const message = err
+                appStore.setStatus({ level, message })
             })
         },
         onKeyupBody: function() {
@@ -137,12 +143,17 @@ export default {
             noteService.remove(this.memoObject.id)
                 .then(result => {
                     if (result.status === 'success') {
-                        note.remove(result.data.id)
+                        noteStore.remove(result.data.id)
                         this.optionOpen = false
+                        const level = StatusLevel.Info
+                        const message = 'Successfully Deleted'
+                        appStore.setStatus({ level, message })
                     }
                 })
                 .catch(err => {
-                    alert(err)
+                    const level = StatusLevel.Error
+                    const message = err
+                    appStore.setStatus({ level, message })
                 })
         }
     },
@@ -162,6 +173,7 @@ export default {
     font-weight: 400;
     line-height: 1.5rem;
     background-clip: padding-box;
+    z-index: 0;
 }
 .root-editMode {
     background-color: transparent;

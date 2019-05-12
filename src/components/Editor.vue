@@ -24,6 +24,7 @@
 <script>
 import noteService from '@/services/note'
 import noteStore from '@/store/modules/note'
+import appStore, { StatusLevel } from '@/store/modules/app'
 import datelib from '@/lib/datelib'
 
 import MarkdownIt from 'markdown-it'
@@ -31,12 +32,12 @@ const md = new MarkdownIt()
 
 export default {
     data: () => ({
-        id: "new",
-        title: "",
-        body: "",
-        lastSavedTitle: "",
-        lastSavedBody: "",
-        titlePlaceholder: "",
+        id: 'new',
+        title: '',
+        body: '',
+        lastSavedTitle: '',
+        lastSavedBody: '',
+        titlePlaceholder: '',
         timeout: null,
         editing: false,
         preview: false
@@ -71,7 +72,7 @@ export default {
     },
     methods: {
         onClickedPreview: function() {
-            if (this.title === "") {
+            if (this.title === '') {
                 this.title = this.titlePlaceholder
             }
             this.preview = !this.preview
@@ -113,20 +114,31 @@ export default {
             bodyPreview.style.height = bodyTextarea.scrollHeight + 'px'
         },
         onClickedDone: function() {
+            if (this.body === '') {
+                const level = StatusLevel.Warning
+                const message = 'Body text is required'
+                appStore.setStatus({ level, message })
+                return
+            }
             noteService.save({
-                id: "",
-                title: this.title? this.title : this.titlePlaceholder,
+                id: '',
+                title: this.title === ''? this.titlePlaceholder : this.title,
                 body: this.body
             })
             .then(result => {
-                if (result.status === "success") {
+                if (result.status === 'success') {
                     noteStore.save(result.data)
-                    this.title = ""
-                    this.body = ""
+                    this.title = ''
+                    this.body = ''
+                    const level = StatusLevel.Info
+                    const message = 'Successfully Saved'
+                    appStore.setStatus({ level, message })
                 } 
             })
             .catch(err => {
-                alert(err)
+                const level = StatusLevel.Error
+                const message = err
+                appStore.setStatus({ level, message })
             })
         }
     }
