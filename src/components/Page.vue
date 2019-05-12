@@ -143,7 +143,7 @@ export default {
             noteService.remove(this.memoObject.id)
                 .then(result => {
                     if (result.status === 'success') {
-                        note.remove(result.data.id)
+                        noteStore.remove(result.data.id)
                         this.optionOpen = false
                         const level = StatusLevel.Info
                         const message = 'Successfully Deleted'
