@@ -31,7 +31,7 @@ class App extends VuexModule implements IAppState {
         timeoutID: undefined,
     };
     public statusbar: IStatusBar = {
-        hidden: false,
+        hidden: true,
     };
 
     @Action
