@@ -126,6 +126,7 @@ export default {
                     noteStore.save(result.data)
                     this.title = ''
                     this.body = ''
+                    this.preview = ''
                     const level = StatusLevel.Info
                     const message = 'Successfully Saved'
                     appStore.setStatus({ level, message })
