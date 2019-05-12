@@ -26,7 +26,6 @@ export default Vue.extend({
     methods: {
         onClickedClose: function() {
             if (!appStore.statusbar.hidden) {
-                console.log('outside click');
                 appStore.resetStatus();
             }
         },
