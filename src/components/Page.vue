@@ -121,7 +121,7 @@ export default {
                     const level = StatusLevel.Info
                     const message = 'Successfully Saved'
                     appStore.setStatus({ level, message })
-                } 
+                }
             })
             .catch(err => {
                 const level = StatusLevel.Error
@@ -136,7 +136,7 @@ export default {
             if (this.editMode) {
                 let textarea = document.getElementById('textarea-'+this.memoObject.id)
                 textarea.style.height = '1px'
-                textarea.style.height = textarea.scrollHeight + 'px'                
+                textarea.style.height = textarea.scrollHeight + 'px'
             }
         },
         onClickedDelete: function() {
@@ -183,7 +183,7 @@ export default {
 .header {
     padding: 0.75rem 1.0rem;
     border-bottom: 1px solid $border;
-    
+
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -209,7 +209,7 @@ export default {
     flex-grow:1;
 }
 .content-textarea {
-    overflow: hidden;   
+    overflow: hidden;
     outline: none;
     resize: none;
     width: 100%;
@@ -217,7 +217,7 @@ export default {
     min-height: 10rem;
 }
 .content-buttons {
-    display: flex;  
+    display: flex;
     flex-direction: row;
     justify-content: flex-end;
 }

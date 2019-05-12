@@ -17,21 +17,19 @@ const save = (data) => {
       data.updatedAt = now
       // create
       if(!data.id) {
-        data.id = prefix + shortid.generate()
+        data.id = shortid.generate()
         data.createdAt = now
       }
       // update
       else {
-        let originData = JSON.parse(localStorage.getItem(data.id))
+        let originData = JSON.parse(localStorage.getItem(prefix + data.id))
         data = Object.assign(originData, data)
       }
       // create data for localStorage
       const key = data.id
-      const valueObj = Object.assign({}, data)
-      delete valueObj.id
-      const value = JSON.stringify(valueObj)
+      const value = JSON.stringify(data)
       // save
-      localStorage.setItem(key, value)
+      localStorage.setItem(prefix + key, value)
       // return value
       return data
     }
@@ -52,9 +50,8 @@ const get = (id) => {
   return new Promise((resolve, reject) => {
     // get Data
     const getLocalStorage = (id) => {
-      let data = JSON.parse(localStorage.getItem(id))
+      let data = JSON.parse(localStorage.getItem(prefix + id))
       if (!data) throw new Error("this id is not available.")
-      data.id = id
       return data
     }
     try {
@@ -74,14 +71,16 @@ const list = () => {
       })
       const memos = correctKeys.map((key) => {
         let data = JSON.parse(localStorage.getItem(key))
-        data.id = key
         return data
       })
       return memos
     }
     try {
       const res = listLocalStorage()
-      resolve(res)
+      resolve({
+        status: "success",
+        data: res
+      })
     } catch(err) {
       reject(err)
     }
@@ -92,11 +91,11 @@ const remove = (id) => {
   return new Promise((resolve, reject) => {
     // remove Data
     const removeLocalStorage = (id) => {
-      if (Object.keys(localStorage).indexOf(id) == -1) {
+      if (Object.keys(localStorage).indexOf(prefix + id) == -1) {
         throw new Error('this id is not available.')
       }
-      localStorage.removeItem(id)
-      return id
+      localStorage.removeItem(prefix + id)
+      return {'id': id}
     }
     try {
       const res = removeLocalStorage(id)
