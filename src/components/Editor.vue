@@ -14,7 +14,7 @@
             <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="body" class="body-textarea bg-surface" @keyup="onKeyupBody"></textarea>
         </div>
         <div class="footer">
-            <button type="button" class="icon-btn" @click="onClickedDone" v-bind:disabled="editing">
+            <button type="button" class="icon-btn" @click.stop="onClickedDone" v-bind:disabled="editing">
                 <i v-bind:class="doneButtonIconClass"></i>  
             </button>
         </div>
