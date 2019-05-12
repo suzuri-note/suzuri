@@ -43,9 +43,10 @@ class App extends VuexModule implements IAppState {
 
         if (status.level === StatusLevel.Info) {
             // 3秒後に自動非表示
-            this.status.timeoutID = setTimeout(() => {
+            const timeoutID = setTimeout(() => {
                 this.resetStatus()
             }, 3000);
+            this.SET_STATUS_TIMEOUT_ID(timeoutID);
         }
     }
 
@@ -61,6 +62,11 @@ class App extends VuexModule implements IAppState {
     private SET_STATUS(status: IStatus): void {
         this.status.level = status.level;
         this.status.message = status.message;
+    }
+
+    @Mutation
+    private SET_STATUS_TIMEOUT_ID(timeoutID: number): void {
+        this.status.timeoutID = timeoutID;
     }
 
     @Mutation
