@@ -27,6 +27,11 @@ class App extends VuexModule implements IAppState {
     @Action
     public setStatus(status: IStatus): void {
         this.SET_STATUS(status);
+        if (status.level !== StatusLevel.Error) {
+            setTimeout(() => {
+                this.resetStatus()
+            }, 3000);
+        }
     }
 
     @Action
