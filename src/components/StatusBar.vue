@@ -1,5 +1,5 @@
 <template>
-    <div :class="StatusBarClass" v-click-outside="onClickedClose">
+    <div :class="StatusBarClass" v-click-outside="onClickedOutside">
         <div class="status-message">{{ statueMessage }}</div>
     </div>
 </template>
@@ -24,7 +24,7 @@ export default Vue.extend({
         },
     },
     methods: {
-        onClickedClose: function() {
+        onClickedOutside: function() {
             if (!appStore.statusbar.hidden) {
                 appStore.resetStatus();
             }
