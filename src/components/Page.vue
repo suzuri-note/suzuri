@@ -118,6 +118,9 @@ export default {
                     noteStore.save(result.data)
                     this.editMode = false
                     this.preview = false
+                    const level = StatusLevel.Info
+                    const message = 'Successfully Saved'
+                    appStore.setStatus({ level, message })
                 } 
             })
             .catch(err => {
@@ -142,6 +145,9 @@ export default {
                     if (result.status === 'success') {
                         note.remove(result.data.id)
                         this.optionOpen = false
+                        const level = StatusLevel.Info
+                        const message = 'Successfully Deleted'
+                        appStore.setStatus({ level, message })
                     }
                 })
                 .catch(err => {

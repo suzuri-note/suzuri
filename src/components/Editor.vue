@@ -129,7 +129,10 @@ export default {
                 if (result.status === 'success') {
                     noteStore.save(result.data)
                     this.title = ''
-                     this.body = ''
+                    this.body = ''
+                    const level = StatusLevel.Info
+                    const message = 'Successfully Saved'
+                    appStore.setStatus({ level, message })
                 } 
             })
             .catch(err => {

@@ -38,7 +38,7 @@ export default Vue.extend({
   flex-direction: row;
   align-items: center;
   padding: 0.1rem 0.75rem;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .status-message {
