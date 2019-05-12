@@ -173,6 +173,7 @@ export default {
     font-weight: 400;
     line-height: 1.5rem;
     background-clip: padding-box;
+    z-index: 0;
 }
 .root-editMode {
     background-color: transparent;

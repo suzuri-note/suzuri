@@ -25,7 +25,7 @@ export default Vue.extend({
     },
     methods: {
         onClickedClose: function() {
-            appStore.resetStatus();
+            appStore.resetStatus()
         },
     },
 })
@@ -33,12 +33,16 @@ export default Vue.extend({
 
 <style scoped lang="scss">
 .statusbar {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0.1rem 0.75rem;
-  font-size: 0.9rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.2rem 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.0rem;
+    transition: all 300ms 0s ease;
+    overflow: hidden;
+    position: relative;
 }
 
 .status-message {
@@ -47,6 +51,6 @@ export default Vue.extend({
 }
 
 .hidden {
-    display: none;
+    transform: translateY(-100%);
 }
 </style>

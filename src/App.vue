@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div class="global-navigation">
-      <Navbar/>
-      <StatusBar/>
+      <Navbar class="navbar"/>
+      <StatusBar class="statusbar"/>
     </div>
     <section class="editor px-3 my-2">
       <Editor/>
@@ -73,6 +73,12 @@ export default {
   position: fixed;
   width: 100vw;
   z-index: 1000;
+}
+.navbar {
+  z-index: 1000;
+}
+.statusbar {
+  z-index: 999;
 }
 section.editor {
   min-height: 100vh;
