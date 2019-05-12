@@ -10,7 +10,7 @@
             </button>
         </div>
         <div class="body inner-container bg-surface mb-2">
-            <div v-show="preview" class="body-preview bg-surface" :id="'body-preview-'+this.id" v-html="htmlBody"></div>
+            <div v-show="preview" class="body-preview bg-surface" v-html="htmlBody"></div>
             <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="body" class="body-textarea bg-surface" @keyup="onKeyupBody"></textarea>
         </div>
         <div class="footer">
@@ -108,10 +108,6 @@ export default {
             let bodyTextarea = document.getElementById('body-textarea-'+this.id)
             bodyTextarea.style.height = '1px'
             bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px'
-
-            let bodyPreview = document.getElementById('body-preview-'+this.id)
-            bodyPreview.style.height = '1px'
-            bodyPreview.style.height = bodyTextarea.scrollHeight + 'px'
         },
         onClickedDone: function() {
             if (this.body === '') {
@@ -130,6 +126,7 @@ export default {
                     noteStore.save(result.data)
                     this.title = ''
                     this.body = ''
+                    this.preview = ''
                     const level = StatusLevel.Info
                     const message = 'Successfully Saved'
                     appStore.setStatus({ level, message })
