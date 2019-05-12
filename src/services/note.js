@@ -91,12 +91,11 @@ const remove = (id) => {
   return new Promise((resolve, reject) => {
     // remove Data
     const removeLocalStorage = (id) => {
-      console.log(id)
       if (Object.keys(localStorage).indexOf(prefix + id) == -1) {
         throw new Error('this id is not available.')
       }
       localStorage.removeItem(prefix + id)
-      return id
+      return {'id': id}
     }
     try {
       const res = removeLocalStorage(id)
