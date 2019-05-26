@@ -45,6 +45,9 @@ export default {
     }),
     created: function() {
         this.titlePlaceholder = datelib.format(new Date())
+        const { title, body } = localstorage.read()
+        this.title = title
+        this.body = body
     },
     computed: {
         htmlBody: function() {
