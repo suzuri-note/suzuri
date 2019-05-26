@@ -26,6 +26,7 @@ import noteService from '@/services/note'
 import noteStore from '@/store/modules/note'
 import appStore, { StatusLevel } from '@/store/modules/app'
 import datelib from '@/lib/datelib'
+import localstorage from '@/lib/localstorage'
 
 import MarkdownIt from 'markdown-it'
 const md = new MarkdownIt()
@@ -44,6 +45,9 @@ export default {
     }),
     created: function() {
         this.titlePlaceholder = datelib.format(new Date())
+        const { title, body } = localstorage.read()
+        this.title = title
+        this.body = body
     },
     computed: {
         htmlBody: function() {
@@ -97,11 +101,16 @@ export default {
                 this.editing = true
                 var self = this
                 this.timeout = setTimeout(function(){
-                    console.log('saved: ' + self.body)
-                    self.lastSavedTitle = self.title
-                    self.lastSavedBody = self.body
+                    if (self.title !== self.lastSavedTitle) {
+                        localstorage.saveTitle(self.title)
+                        self.lastSavedTitle = self.title
+                    }
+                    if (self.body !== self.lastSavedBody) {
+                        localstorage.saveBody(self.body)
+                        self.lastSavedBody = self.body
+                    }
                     self.editing = false
-                }, 250)
+                }, 2000)
             }
         },
         adjustBodyHeight: function() {
