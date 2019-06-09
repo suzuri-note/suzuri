@@ -4,7 +4,12 @@
         <a href="#" class="navbar-item text-brand">SUZURI</a>
       </div>
       <div class="navbar-menu">
-        <button type="button" class="icon-btn icon-btn-primary"><i class="fas fa-search"></i></button>
+        <router-link to="/edit">
+          <button type="button" class="icon-btn icon-btn-primary"><i class="fas fa-plus"></i></button>
+        </router-link>
+        <router-link to="/account" class="ml-1">
+          <button type="button" class="icon-btn icon-btn-primary"><i class="fas fa-user-circle"></i></button>
+        </router-link>
       </div>
     </nav>
 </template>
@@ -27,5 +32,9 @@
 .navbar-brand {
     font-family: 'HelveticaNeue-CondensedBold', 'Helvetica Neue';
     font-size: 1.5rem;
+}
+
+i.fas {
+  font-size: 1.25rem;
 }
 </style>

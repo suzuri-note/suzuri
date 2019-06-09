@@ -1,9 +1,5 @@
 <template>
-  <div id="app">
-    <div class="global-navigation">
-      <Navbar class="navbar"/>
-      <StatusBar class="statusbar"/>
-    </div>
+  <div id="edit">
     <section class="editor px-3 my-2">
       <Editor/>
     </section>
@@ -18,8 +14,6 @@
 </template>
 
 <script>
-import Navbar from '@/components/Navbar.vue'
-import StatusBar from '@/components/StatusBar.vue'
 import Editor from '@/components/Editor.vue'
 import Footer from '@/components/Footer.vue'
 import DailyNote from '@/components/DailyNote.vue'
@@ -31,8 +25,6 @@ import datelib from '@/lib/datelib'
 export default {
   name: 'edit',
   components: {
-    Navbar,
-    StatusBar,
     Editor,
     Footer,
     DailyNote
@@ -57,32 +49,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#app {
-  font-family: 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.global-navigation {
-  position: fixed;
-  width: 100vw;
-  z-index: 1000;
-}
-.navbar {
-  z-index: 1000;
-}
-.statusbar {
-  z-index: 999;
-}
-section.editor {
+.section.editor {
   min-height: 100vh;
-  padding-top: 4.125rem;
   width: 100%;
   max-width: 680px;
 }
