@@ -1,9 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 import Home from '@/components/pages/Home.vue';
 import Edit from '@/components/pages/Edit.vue';
+import Account from '@/components/pages/Account.vue';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   mode: 'history',
@@ -12,20 +13,17 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
     },
     {
       path: '/edit',
       name: 'edit',
-      component: Edit
+      component: Edit,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    }
-  ]
-})
+      path: '/account',
+      name: 'account',
+      component: Account,
+    },
+  ],
+});

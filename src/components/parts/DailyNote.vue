@@ -11,7 +11,7 @@
 
 
 <script>
-import Page from './Page.vue'
+import Page from '@/components/parts/Page.vue'
 export default {
     components: {
         Page

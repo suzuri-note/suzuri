@@ -33,5 +33,5 @@ export default {
     saveTitle,
     saveBody,
     clear,
-    read
+    read,
 };
