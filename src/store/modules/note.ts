@@ -42,7 +42,6 @@ class Note extends VuexModule implements INoteState {
     // actions
     @Action({ commit: 'SAVE' })
     public save(memo: IMemoState) {
-        console.log('save action');
         return memo;
     }
     @Action({ commit: 'REPLACE_LIST' })
@@ -57,7 +56,6 @@ class Note extends VuexModule implements INoteState {
     // mutation
     @Mutation
     private SAVE(memo: IMemoState) {
-        console.log('save mutation');
         for (const i in this.memos) {
             if (this.memos[i].id === memo.id) {
                 const newMemos = this.memos.concat();

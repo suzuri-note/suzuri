@@ -14,7 +14,7 @@ test('dailyNote getter', async () => {
 
     // actionを投げてからmutationが完了するまで待つ
     // TODO: もっと良い待ち方があるはずなので要検討
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     expect(noteStore.dailyNote[datelib.formatFromUnixtime(ts)][0].id).toBe('a');
 });
