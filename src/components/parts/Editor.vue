@@ -1,17 +1,13 @@
 <template>
     <div class="root">
         <div class="header">
-            <div class="title">
-                <div v-show="preview">{{ title }}</div>
-                <input v-show="!preview" v-model="title" class="title-input" :placeholder="titlePlaceholder" @keyup="onKeyupTitle"/>
-            </div>
             <button type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
                 <i class="fab fa-markdown editor-markdown ml-3"></i>
             </button>
         </div>
         <div class="body inner-container bg-surface mb-2">
             <div v-show="preview" class="body-preview bg-surface" v-html="htmlBody"></div>
-            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="body" class="body-textarea bg-surface" @keyup="onKeyupBody"></textarea>
+            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="bodyModel" class="body-textarea bg-surface" @keyup="onKeyupBody"></textarea>
         </div>
         <div class="footer">
             <button type="button" class="icon-btn" @click.stop="onClickedDone" v-bind:disabled="editing">
@@ -22,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Emit, Watch } from 'vue-property-decorator';
 
 import noteService, { ISingleResponse } from '@/services/note';
 import noteStore from '@/store/modules/note';
@@ -35,24 +31,46 @@ const md = new MarkdownIt();
 
 @Component({})
 export default class Editor extends Vue {
-    @Prop({ type: String })
+    @Prop()
     id!: string | null;
-    title!: string;
+    @Prop()
     body!: string;
-    lastSavedTitle!: string;
-    lastSavedBody!: string;
-    titlePlaceholder!: string;
-    timeout!: number | null;
-    editing!: boolean;
+    @Prop()
     preview!: boolean;
 
+    lastSavedBody!: string;
+    timeout!: number | null;
+    editing!: boolean;
+
+    @Emit()
+    private clickedPreview(){
+    }
+
+    @Emit()
+    private clickedDone(){
+    }
+
+    @Emit()
+    private autosaveEmitted(){
+    }
+
+    @Emit()
+    private changedBody(newValue: string){
+    }
+    
     constructor() {
         super();
-        this.title = '';
-        this.body = '';
         this.timeout = null;
         this.editing = false;
-        this.preview = false;
+    }
+
+    get bodyModel(): string {
+        return this.body;
+    }
+
+    set bodyModel(newValue: string) {
+        this.changedBody(newValue);
+        
     }
 
     get htmlBody(): string {
@@ -61,120 +79,70 @@ export default class Editor extends Vue {
 
     get previewButtonClass(): any {
         return {
-                'icon-btn': true,
-                'icon-btn-muted': !this.preview,
-                'icon-btn-primary': this.preview
+            'icon-btn': true,
+            'icon-btn-muted': !this.preview,
+            'icon-btn-primary': this.preview,
         };
     }
 
     get doneButtonIconClass(): any {
         return {
-                fas: true,
-                'icon-large': true,
+            fas: true,
+            'icon-large': true,
 
-                'fa-circle-notch': this.editing,
-                'icon-btn-muted': this.editing,
-                'icon-rotate': this.editing,
+            'fa-circle-notch': this.editing,
+            'icon-btn-muted': this.editing,
+            'icon-rotate': this.editing,
 
-                'fa-check-circle': !this.editing,
-                'icon-btn-primary': !this.editing,
+            'fa-check-circle': !this.editing,
+            'icon-btn-primary': !this.editing,
         };
     }
 
-    public created(): void {
-        this.titlePlaceholder = datelib.format(new Date());
-        if (this.id != null) {
-            noteService.get(this.id)
-                .then((result: ISingleResponse): void => {
-                    if (result.status === 'success') {
-                        this.title = result.data.title;
-                        this.body = result.data.body;
-                    }
-                })
-                .catch((err: Error): void => {
-                    const level = StatusLevel.Error;
-                    const message = err.toString();
-                    appStore.setStatus({ level, message });
-                })
-        } else {
-            const { title, body } = localstorage.read();
-            this.title = title;
-            this.body = body;
-        }
-    }
-
+    
+    
     public onClickedPreview(): void {
-        if (this.title === '') {
-            this.title = this.titlePlaceholder;
-        }
-        this.preview = !this.preview;
-        if (!this.preview) {
-            this.$nextTick(function() {
-                this.adjustBodyHeight() // 本文textareaの高さ調節
-            });
-        }
+        this.clickedPreview();
     }
 
     public onKeyupBody(): void {
         this.adjustBodyHeight(); // 本文textareaの高さ調節
         this.autosave(); // localstorageへの保存
+        console.log(this.body);
     }
 
     public onKeyupTitle(): void {
         this.autosave(); // localstorageへの保存
     }
 
-    public onClickedDone(): void {
-        if (this.body === '') {
-            const level = StatusLevel.Warning;
-            const message = 'Body text is required';
-            appStore.setStatus({ level, message });
-            return;
-        }
-        noteService.save({
-            id: '',
-            title: this.title === ''? this.titlePlaceholder : this.title,
-            body: this.body
-        })
-        .then((result: ISingleResponse) => {
-            if (result.status === 'success') {
-                noteStore.save(result.data);
-                this.title = '';
-                this.body = '';
-                this.preview = false;
-                localstorage.clear();
+    
 
-                const level = StatusLevel.Info;
-                const message = 'Successfully Saved';
-                appStore.setStatus({ level, message });
-            } 
-        })
-        .catch((err: Error) => {
-            const level = StatusLevel.Error;
-            const message = err.toString();
-            appStore.setStatus({ level, message });
-        })
+    public onClickedDone(): void {
+        this.clickedDone();
+    }
+
+    @Watch('preview')
+    public onChangedPreview(val: boolean, oldVal: boolean): void {
+        if (val === false) {
+            this.$nextTick(function() {
+                this.adjustBodyHeight() // 本文textareaの高さ調節
+            });
+        }
     }
 
     private autosave(): void {
-            if (this.body !== this.lastSavedBody || this.title !== this.lastSavedTitle) {
-                if (this.timeout) {
-                    clearTimeout(this.timeout);
-                }
-                this.editing = true;
-                var self = this;
-                this.timeout = setTimeout(function(){
-                    if (self.title !== self.lastSavedTitle) {
-                        localstorage.saveTitle(self.title);
-                        self.lastSavedTitle = self.title;
-                    }
-                    if (self.body !== self.lastSavedBody) {
-                        localstorage.saveBody(self.body);
-                        self.lastSavedBody = self.body;
-                    }
-                    self.editing = false;
-                }, 2000);
+        if (this.body !== this.lastSavedBody) {
+            if (this.timeout) {
+                clearTimeout(this.timeout);
             }
+            this.editing = true;
+            var self = this;
+            this.timeout = setTimeout(function(){
+                self.autosaveEmitted();
+                self.lastSavedBody = self.body;
+                self.editing = false;
+            }, 2000);
+        }
     }
 
     private adjustBodyHeight(): void {
@@ -184,124 +152,6 @@ export default class Editor extends Vue {
             bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px';
         }
     }
-
-
-    /*data: () => ({
-        id: 'new',
-        title: '',
-        body: '',
-        lastSavedTitle: '',
-        lastSavedBody: '',
-        titlePlaceholder: '',
-        timeout: null,
-        editing: false,
-        preview: false
-    }),
-    created: function() {
-        this.titlePlaceholder = datelib.format(new Date())
-        const { title, body } = localstorage.read()
-        this.title = title
-        this.body = body
-    },
-    computed: {
-        htmlBody: function() {
-            return md.render(this.body) 
-        },
-        previewButtonClass: function () {
-            return {
-                'icon-btn': true,
-                'icon-btn-muted': !this.preview,
-                'icon-btn-primary': this.preview
-            }
-        },
-        doneButtonIconClass: function() {
-            return {
-                fas: true,
-                'icon-large': true,
-
-                'fa-circle-notch': this.editing,
-                'icon-btn-muted': this.editing,
-                'icon-rotate': this.editing,
-
-                'fa-check-circle': !this.editing,
-                'icon-btn-primary': !this.editing,
-            }
-        }
-    },
-    methods: {
-        onClickedPreview: function() {
-            if (this.title === '') {
-                this.title = this.titlePlaceholder
-            }
-            this.preview = !this.preview
-            if (!this.preview) {
-                this.$nextTick(function() {
-                    this.adjustBodyHeight() // 本文textareaの高さ調節
-                })
-            }
-        },
-        onKeyupBody: function() {
-            this.adjustBodyHeight() // 本文textareaの高さ調節
-            this.autosave() // localstorageへの保存
-        },
-        onKeyupTitle: function() {
-            this.autosave() // localstorageへの保存
-        },
-        autosave: function() {
-            if (this.body !== this.lastSavedBody || this.title !== this.lastSavedTitle) {
-                if (this.timeout) {
-                    clearTimeout(this.timeout)
-                }
-                this.editing = true
-                var self = this
-                this.timeout = setTimeout(function(){
-                    if (self.title !== self.lastSavedTitle) {
-                        localstorage.saveTitle(self.title)
-                        self.lastSavedTitle = self.title
-                    }
-                    if (self.body !== self.lastSavedBody) {
-                        localstorage.saveBody(self.body)
-                        self.lastSavedBody = self.body
-                    }
-                    self.editing = false
-                }, 2000)
-            }
-        },
-        adjustBodyHeight: function() {
-            let bodyTextarea = document.getElementById('body-textarea-'+this.id)
-            bodyTextarea.style.height = '1px'
-            bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px'
-        },
-        onClickedDone: function() {
-            if (this.body === '') {
-                const level = StatusLevel.Warning
-                const message = 'Body text is required'
-                appStore.setStatus({ level, message })
-                return
-            }
-            noteService.save({
-                id: '',
-                title: this.title === ''? this.titlePlaceholder : this.title,
-                body: this.body
-            })
-            .then(result => {
-                if (result.status === 'success') {
-                    noteStore.save(result.data)
-                    this.title = ''
-                    this.body = ''
-                    this.preview = ''
-                    const level = StatusLevel.Info
-                    const message = 'Successfully Saved'
-                    appStore.setStatus({ level, message })
-                } 
-            })
-            .catch(err => {
-                const level = StatusLevel.Error
-                const message = err
-                appStore.setStatus({ level, message })
-            })
-        }
-    }*/
 }
 </script>
 
@@ -314,24 +164,6 @@ export default class Editor extends Vue {
     display: flex;
     flex-direction: row;
     min-height: 2.0rem;
-}
-.title {
-    font-size: 1.2rem;
-    padding: .5rem .75rem;
-    flex-grow: 1;
-}
-.title-input {
-    border: none;
-    outline: none;
-    border-radius: 0;
-    background-color: transparent;
-    padding: 0;
-    width: 100%;
-}
-.title-input:hover, .title-input:active {
-    outline: 0;
-    border: none;
-    box-shadow: none;
 }
 
 .body-textarea {
