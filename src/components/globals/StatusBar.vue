@@ -23,12 +23,12 @@ export default class StatusBar extends Vue {
                 'bg-info': appStore.status.level === StatusLevel.Info,
                 'bg-warning': appStore.status.level === StatusLevel.Warning,
                 'bg-error': appStore.status.level === StatusLevel.Error,
-            };
+        };
     }
 
     onClickedOutside() {
         if (!appStore.statusbar.hidden) {
-                appStore.resetStatus();
+            appStore.resetStatus();
         }
     }
 }
