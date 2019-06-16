@@ -10,15 +10,23 @@
 </template>
 
 
-<script>
-import Page from '@/components/parts/Page.vue'
-export default {
-    components: {
-        Page
-    },
-    props: {
-        date: String,
-        memos: Array
+<script lang="ts">
+import Page from '@/components/parts/Page.vue';
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import { IMemoState } from '@/store/modules/note';
+
+@Component({ components: { Page } })
+export default class DialyNote extends Vue {
+    @Prop({ type: String })
+    date: string
+
+    @Prop({ type: Array })
+    memos: IMemoState[]
+
+    constructor() {
+        super();
+        this.date = '';
+        this.memos = [];
     }
 }
 </script>

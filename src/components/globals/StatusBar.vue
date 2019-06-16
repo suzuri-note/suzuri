@@ -1,39 +1,37 @@
 <template>
-    <div :class="StatusBarClass" v-click-outside="onClickedOutside">
-        <div class="status-message">{{ statueMessage }}</div>
+    <div :class="statusBarClass" v-click-outside="onClickedOutside">
+        <div class="status-message">{{ statusMessage }}</div>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import ClickOutside from 'vue-click-outside';
+import { Component, Vue } from 'vue-property-decorator';
 
 import appStore, { StatusLevel } from '@/store/modules/app';
 
-export default Vue.extend({
-    computed: {
-        statueMessage: () => appStore.status.message,
-        StatusBarClass: function() {
-            return {
+@Component({ directives: { ClickOutside } })
+export default class StatusBar extends Vue {
+    get statusMessage(): string {
+        return appStore.status.message;
+    }
+
+    get statusBarClass(): any {
+        return {
                 statusbar: true,
                 hidden: appStore.statusbar.hidden,
                 'bg-info': appStore.status.level === StatusLevel.Info,
                 'bg-warning': appStore.status.level === StatusLevel.Warning,
                 'bg-error': appStore.status.level === StatusLevel.Error,
             };
-        },
-    },
-    methods: {
-        onClickedOutside: function() {
-            if (!appStore.statusbar.hidden) {
+    }
+
+    onClickedOutside() {
+        if (!appStore.statusbar.hidden) {
                 appStore.resetStatus();
-            }
-        },
-    },
-    directives: {
-        ClickOutside,
-    },
-})
+        }
+    }
+}
 </script>
 
 <style scoped lang="scss">

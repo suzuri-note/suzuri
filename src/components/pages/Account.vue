@@ -34,14 +34,14 @@ export default class AccountPage extends Vue {
     created() {
         noteService.list()
             .then((result: any) => {
-                if (result.status === "success") {
-                noteStore.replaceList(result.data)
+                if (result.status === 'success') {
+                noteStore.replaceList(result.data);
                 }
             })
             .catch((err: string) => {
-                const level = StatusLevel.Warning
-                const message = err
-                appStore.setStatus({ level, message })
+                const level = StatusLevel.Warning;
+                const message = err;
+                appStore.setStatus({ level, message });
             })
     }
 }

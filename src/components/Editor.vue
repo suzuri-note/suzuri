@@ -21,18 +21,172 @@
     </div>
 </template>
 
-<script>
-import noteService from '@/services/note'
-import noteStore from '@/store/modules/note'
-import appStore, { StatusLevel } from '@/store/modules/app'
-import datelib from '@/lib/datelib'
-import localstorage from '@/lib/localstorage'
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import MarkdownIt from 'markdown-it'
-const md = new MarkdownIt()
+import noteService, { ISingleResponse } from '@/services/note';
+import noteStore from '@/store/modules/note';
+import appStore, { StatusLevel } from '@/store/modules/app';
+import datelib from '@/lib/datelib';
+import localstorage from '@/lib/localstorage';
 
-export default {
-    data: () => ({
+import MarkdownIt from 'markdown-it';
+const md = new MarkdownIt();
+
+@Component({})
+export default class Editor extends Vue {
+    @Prop({ type: String })
+    id!: string | null;
+    title!: string;
+    body!: string;
+    lastSavedTitle!: string;
+    lastSavedBody!: string;
+    titlePlaceholder!: string;
+    timeout!: number | null;
+    editing!: boolean;
+    preview!: boolean;
+
+    constructor() {
+        super();
+        this.title = '';
+        this.body = '';
+        this.timeout = null;
+        this.editing = false;
+        this.preview = false;
+    }
+
+    get htmlBody(): string {
+        return md.render(this.body);
+    }
+
+    get previewButtonClass(): any {
+        return {
+                'icon-btn': true,
+                'icon-btn-muted': !this.preview,
+                'icon-btn-primary': this.preview
+        };
+    }
+
+    get doneButtonIconClass(): any {
+        return {
+                fas: true,
+                'icon-large': true,
+
+                'fa-circle-notch': this.editing,
+                'icon-btn-muted': this.editing,
+                'icon-rotate': this.editing,
+
+                'fa-check-circle': !this.editing,
+                'icon-btn-primary': !this.editing,
+        };
+    }
+
+    public created(): void {
+        this.titlePlaceholder = datelib.format(new Date());
+        if (this.id != null) {
+            noteService.get(this.id)
+                .then((result: ISingleResponse): void => {
+                    if (result.status === 'success') {
+                        this.title = result.data.title;
+                        this.body = result.data.body;
+                    }
+                })
+                .catch((err: Error): void => {
+                    const level = StatusLevel.Error;
+                    const message = err.toString();
+                    appStore.setStatus({ level, message });
+                })
+        } else {
+            const { title, body } = localstorage.read();
+            this.title = title;
+            this.body = body;
+        }
+    }
+
+    public onClickedPreview(): void {
+        if (this.title === '') {
+            this.title = this.titlePlaceholder;
+        }
+        this.preview = !this.preview;
+        if (!this.preview) {
+            this.$nextTick(function() {
+                this.adjustBodyHeight() // 本文textareaの高さ調節
+            });
+        }
+    }
+
+    public onKeyupBody(): void {
+        this.adjustBodyHeight(); // 本文textareaの高さ調節
+        this.autosave(); // localstorageへの保存
+    }
+
+    public onKeyupTitle(): void {
+        this.autosave(); // localstorageへの保存
+    }
+
+    public onClickedDone(): void {
+        if (this.body === '') {
+            const level = StatusLevel.Warning;
+            const message = 'Body text is required';
+            appStore.setStatus({ level, message });
+            return;
+        }
+        noteService.save({
+            id: '',
+            title: this.title === ''? this.titlePlaceholder : this.title,
+            body: this.body
+        })
+        .then((result: ISingleResponse) => {
+            if (result.status === 'success') {
+                noteStore.save(result.data);
+                this.title = '';
+                this.body = '';
+                this.preview = false;
+                localstorage.clear();
+
+                const level = StatusLevel.Info;
+                const message = 'Successfully Saved';
+                appStore.setStatus({ level, message });
+            } 
+        })
+        .catch((err: Error) => {
+            const level = StatusLevel.Error;
+            const message = err.toString();
+            appStore.setStatus({ level, message });
+        })
+    }
+
+    private autosave(): void {
+            if (this.body !== this.lastSavedBody || this.title !== this.lastSavedTitle) {
+                if (this.timeout) {
+                    clearTimeout(this.timeout);
+                }
+                this.editing = true;
+                var self = this;
+                this.timeout = setTimeout(function(){
+                    if (self.title !== self.lastSavedTitle) {
+                        localstorage.saveTitle(self.title);
+                        self.lastSavedTitle = self.title;
+                    }
+                    if (self.body !== self.lastSavedBody) {
+                        localstorage.saveBody(self.body);
+                        self.lastSavedBody = self.body;
+                    }
+                    self.editing = false;
+                }, 2000);
+            }
+    }
+
+    private adjustBodyHeight(): void {
+        let bodyTextarea: HTMLElement | null = document.getElementById('body-textarea-'+this.id);
+        if (bodyTextarea != null) {
+            bodyTextarea.style.height = '1px';
+            bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px';
+        }
+    }
+
+
+    /*data: () => ({
         id: 'new',
         title: '',
         body: '',
@@ -147,7 +301,7 @@ export default {
                 appStore.setStatus({ level, message })
             })
         }
-    }
+    }*/
 }
 </script>
 

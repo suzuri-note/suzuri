@@ -1,7 +1,7 @@
 <template>
   <div id="edit">
     <section class="editor px-3 my-2">
-      <Editor/>
+      <Editor :id="id"/>
     </section>
     <section class="footer px-3">
       <hr>
@@ -10,16 +10,32 @@
   </div>
 </template>
 
-<script>
-import Editor from '@/components/Editor.vue'
-import Footer from '@/components/Footer.vue'
+<script lang="ts">
+import Editor from '@/components/Editor.vue';
+import Footer from '@/components/Footer.vue';
+import { Route } from 'vue-router';
 
-export default {
-  name: 'edit',
-  components: {
-    Editor,
-    Footer
-  },
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
+@Component({ components: { Editor, Footer } })
+export default class EditPage extends Vue {
+  id!: string | null;
+
+  constructor() {
+    super();
+    this.id = null;
+  }
+
+  public created() {
+    const id: string | (string | null)[] = this.$route.query.id;
+    if (id instanceof Array) {
+      if (id[0] != undefined) {
+        this.id = id[0];
+      }
+    } else {
+      this.id = id;
+    }
+  }
 }
 </script>
 
