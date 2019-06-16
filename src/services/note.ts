@@ -1,6 +1,6 @@
 import shortid from 'shortid';
 
-interface INote {
+export interface INote {
   title: string;
   body: string;
   id: string;
@@ -8,21 +8,21 @@ interface INote {
   updatedAt: number;
 }
 
-interface INoteID {
+export interface INoteID {
   id: string;
 }
 
-interface ISingleResponse {
+export interface ISingleResponse {
   status: string;
   data: INote;
 }
 
-interface IListResponse {
+export interface IListResponse {
   status: string;
   data: INote[];
 }
 
-interface IIDResponse {
+export interface IIDResponse {
   status: string;
   data: INoteID;
 }
