@@ -1,15 +1,13 @@
 <template>
     <div class="root">
-        <div class="header">
+        <div class="body inner-container mb-2">
+            <div v-show="preview" class="body-preview" v-html="htmlBody"></div>
+            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="bodyModel" class="body-textarea" @keyup="onKeyupBody"></textarea>
+        </div>
+        <div class="footer">
             <button type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
                 <i class="fab fa-markdown editor-markdown ml-3"></i>
             </button>
-        </div>
-        <div class="body inner-container bg-surface mb-2">
-            <div v-show="preview" class="body-preview bg-surface" v-html="htmlBody"></div>
-            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="bodyModel" class="body-textarea bg-surface" @keyup="onKeyupBody"></textarea>
-        </div>
-        <div class="footer">
             <button type="button" class="icon-btn" @click.stop="onClickedDone" v-bind:disabled="editing">
                 <i v-bind:class="doneButtonIconClass"></i>  
             </button>
@@ -89,13 +87,12 @@ export default class Editor extends Vue {
         return {
             fas: true,
             'icon-large': true,
+            'icon-btn-muted': true,
 
             'fa-circle-notch': this.editing,
-            'icon-btn-muted': this.editing,
             'icon-rotate': this.editing,
 
             'fa-check-circle': !this.editing,
-            'icon-btn-primary': !this.editing,
         };
     }
 
@@ -108,7 +105,6 @@ export default class Editor extends Vue {
     public onKeyupBody(): void {
         this.adjustBodyHeight(); // 本文textareaの高さ調節
         this.autosave(); // localstorageへの保存
-        console.log(this.body);
     }
 
     public onKeyupTitle(): void {
@@ -160,11 +156,6 @@ export default class Editor extends Vue {
 .root {
     text-align: left;
 }
-.header {
-    display: flex;
-    flex-direction: row;
-    min-height: 2.0rem;
-}
 
 .body-textarea {
     overflow: hidden;   
@@ -175,6 +166,7 @@ export default class Editor extends Vue {
     height: auto;
     min-height: 10rem;
     padding: 0;
+    background-color: transparent;
 }
 .body-preview {
     min-height: 10rem;

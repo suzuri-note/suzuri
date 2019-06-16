@@ -47,7 +47,7 @@ header {
 }
 
 .router-view {
-    padding-top: 4.125rem;
+    padding-top: 3.25rem;
     width: 100%;
     max-width: 680px;
 }

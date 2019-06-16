@@ -117,6 +117,13 @@ export default class EditPage extends Vue {
 </script>
 
 <style scoped lang="scss">
+#edit {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
 .section.editor {
   min-height: 100vh;
   width: 100%;
@@ -125,7 +132,8 @@ export default class EditPage extends Vue {
 section.footer {
   width: 100%;
   max-width: 680px;
-  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 </style>
 
