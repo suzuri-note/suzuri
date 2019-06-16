@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts">
-import Editor from '@/components/Editor.vue';
-import Footer from '@/components/Footer.vue';
+import Editor from '@/components/parts/Editor.vue';
+import Footer from '@/components/parts/Footer.vue';
 import { Route } from 'vue-router';
 
 import { Vue, Component, Prop } from 'vue-property-decorator';
