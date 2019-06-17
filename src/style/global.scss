@@ -94,10 +94,10 @@ a {
 
 // muted color
 .text-muted {
-  color: $muted;
+  color: $text-muted!important;
 }
 .text-muted:hover {
-  color: $muted;
+  color: $text-muted-variant!important;
 }
 
 // border color
