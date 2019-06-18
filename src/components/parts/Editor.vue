@@ -2,9 +2,10 @@
     <div class="root">
         <div class="body inner-container mb-2">
             <div v-show="preview" class="body-preview" v-html="htmlBody"></div>
-            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="bodyModel" class="body-textarea" @keyup="onKeyupBody"></textarea>
+            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="bodyModel" class="body-textarea" @input="onInput"></textarea>
         </div>
-        <div class="footer">
+        <div class="editor-footer">
+            <span class="length-counter text-muted">{{ body.length }}</span>
             <button type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
                 <i class="fab fa-markdown editor-markdown ml-3"></i>
             </button>
@@ -62,6 +63,10 @@ export default class Editor extends Vue {
         this.editing = false;
     }
 
+    public mounted() {
+        this.adjustBodyHeight();
+    }
+
     get bodyModel(): string {
         return this.body;
     }
@@ -102,15 +107,10 @@ export default class Editor extends Vue {
         this.clickedPreview();
     }
 
-    public onKeyupBody(): void {
+    public onInput(): void {
         this.adjustBodyHeight(); // 本文textareaの高さ調節
         this.autosave(); // localstorageへの保存
     }
-
-    public onKeyupTitle(): void {
-        this.autosave(); // localstorageへの保存
-    }
-
     
 
     public onClickedDone(): void {
@@ -125,6 +125,12 @@ export default class Editor extends Vue {
             });
         }
     }
+
+    /*@Watch('body')
+    public onChangedBody(val: boolean, oldVal: boolean): void {
+        this.adjustBodyHeight(); // 本文textareaの高さ調節
+        this.autosave(); // localstorageへの保存
+    }*/
 
     private autosave(): void {
         if (this.body !== this.lastSavedBody) {
@@ -144,8 +150,12 @@ export default class Editor extends Vue {
     private adjustBodyHeight(): void {
         let bodyTextarea: HTMLElement | null = document.getElementById('body-textarea-'+this.id);
         if (bodyTextarea != null) {
-            bodyTextarea.style.height = '1px';
+            //const rem = Number(getComputedStyle(document.documentElement).fontSize.replace(/px/, ''));
+            //const size = (bodyTextarea.scrollHeight + rem);
+            console.log('scroll' + bodyTextarea.scrollHeight);
+            bodyTextarea.style.height = 'auto';
             bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px';
+            // document.documentElement.scrollTop = 100;
         }
     }
 }
@@ -173,10 +183,17 @@ export default class Editor extends Vue {
 }
 
 
-.footer {
+.editor-footer {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
 }
+
+.length-counter {
+    font-size: 0.8rem;
+    line-height: 1.5rem;
+}
+
 .icon-rotate {
     animation: rotate 1s;
     animation-iteration-count: infinite;

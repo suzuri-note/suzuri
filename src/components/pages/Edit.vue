@@ -132,7 +132,7 @@ export default class EditPage extends Vue {
 section.footer {
   width: 100%;
   max-width: 680px;
-  margin-top: 1.5rem;
+  margin-top: 10rem;
   margin-bottom: 1.5rem;
 }
 </style>
