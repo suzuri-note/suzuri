@@ -217,7 +217,7 @@ export default class Editor extends Vue {
         width: 100vw;
         left: 0px;
         bottom: 0px;
-        padding: .25rem;
+        padding: .75rem;
     }
 
     .editor-interface-preview {
