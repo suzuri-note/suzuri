@@ -4,14 +4,17 @@
             <div v-show="preview" class="body-preview" v-html="htmlBody"></div>
             <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="bodyModel" class="body-textarea" @input="onInput"></textarea>
         </div>
-        <div class="editor-footer">
-            <span class="length-counter text-muted">{{ body.length }}</span>
-            <button type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
-                <i class="fab fa-markdown editor-markdown ml-3"></i>
-            </button>
-            <button type="button" class="icon-btn" @click.stop="onClickedDone" v-bind:disabled="editing">
-                <i v-bind:class="doneButtonIconClass"></i>  
-            </button>
+        <div class="editor-interface">
+            <div class="editor-interface-left">
+                <button type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
+                    <i class="fab fa-markdown editor-markdown"></i>
+                </button>
+            </div>
+            <div class="editor-interface-right">
+                <button type="button" class="icon-btn" @click.stop="onClickedDone" v-bind:disabled="editing">
+                   <i v-bind:class="doneButtonIconClass"></i>  
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -83,6 +86,7 @@ export default class Editor extends Vue {
     get previewButtonClass(): any {
         return {
             'icon-btn': true,
+            'editor-interface-preview': true,
             'icon-btn-muted': !this.preview,
             'icon-btn-primary': this.preview,
         };
@@ -93,6 +97,7 @@ export default class Editor extends Vue {
             fas: true,
             'icon-large': true,
             'icon-btn-muted': true,
+            'editor-interface-done': true,
 
             'fa-circle-notch': this.editing,
             'icon-rotate': this.editing,
@@ -155,13 +160,11 @@ export default class Editor extends Vue {
             const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 
-            console.log('before', scrollLeft, scrollTop);
             bodyTextarea.style.height = 'auto';
             bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px';
 
             const scrollLeftAfter = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
             const scrollTopAfter = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-            console.log('after', scrollLeftAfter, scrollTopAfter);
             
             // Restore the scrollLeft, scrollTop values after resizing the textarea
             window.scrollTo(scrollLeft, scrollTop);
@@ -187,15 +190,43 @@ export default class Editor extends Vue {
     padding: 0;
     background-color: transparent;
 }
+@media (max-width: 575px) {
+    .body-textarea {
+        min-height: 100vh;
+    }
+}
+
+
 .body-preview {
     min-height: 10rem;
 }
 
-
-.editor-footer {
+.editor-interface {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+}
+
+@media (max-width: 575px) {
+    .editor-interface {
+        position: fixed;
+        bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100vw;
+        left: 0px;
+        bottom: 0px;
+        padding: .25rem;
+    }
+
+    .editor-interface-preview {
+        font-size: 1.33rem;
+    }
+
+    .editor-interface-done {
+        font-size: 2rem;
+    }
 }
 
 .length-counter {

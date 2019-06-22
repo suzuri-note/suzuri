@@ -1,6 +1,6 @@
 <template>
   <div id="edit">
-    <section class="editor px-3 my-2">
+    <section class="editor px-sm-1 px-md-3 my-2">
       <Editor 
         :id="id" 
         :body="body" 
@@ -11,9 +11,9 @@
         @changed-body="onChangedBody"
         />
     </section>
-    <section class="footer px-3">
-      <hr>
-      <Footer/>
+    <section class="footer px-sm-1  px-3">
+      <hr class="nodisplay-sm">
+      <Footer class="nodisplay-sm"/>
     </section>
   </div>
 </template>

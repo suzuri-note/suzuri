@@ -129,3 +129,9 @@ hr {
   background-color: $bg-error!important;
   color: $on-error!important;
 }
+
+@media (max-width: 575px) { 
+  .nodisplay-sm {
+    display: none;
+  }
+}
