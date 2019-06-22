@@ -150,12 +150,21 @@ export default class Editor extends Vue {
     private adjustBodyHeight(): void {
         let bodyTextarea: HTMLElement | null = document.getElementById('body-textarea-'+this.id);
         if (bodyTextarea != null) {
-            //const rem = Number(getComputedStyle(document.documentElement).fontSize.replace(/px/, ''));
-            //const size = (bodyTextarea.scrollHeight + rem);
-            console.log('scroll' + bodyTextarea.scrollHeight);
+            // Save the scrollLeft, scrollTop values
+            // ref. https://stackoverflow.com/questions/18262729/how-to-stop-window-jumping-when-typing-in-autoresizing-textarea/18262927#18262927
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+
+            console.log('before', scrollLeft, scrollTop);
             bodyTextarea.style.height = 'auto';
             bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px';
-            // document.documentElement.scrollTop = 100;
+
+            const scrollLeftAfter = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+            const scrollTopAfter = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+            console.log('after', scrollLeftAfter, scrollTopAfter);
+            
+            // Restore the scrollLeft, scrollTop values after resizing the textarea
+            window.scrollTo(scrollLeft, scrollTop);
         }
     }
 }
