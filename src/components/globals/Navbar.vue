@@ -2,7 +2,9 @@
     <nav class="navbar bg-dark">
       <div class="navbar-brand">
         <a href="#" class="navbar-item text-brand">SUZURI</a>
+        <span class="ml-1">v1.0.4 alpha</span>
       </div>
+      
       <div class="navbar-menu">
         <router-link to="/edit">
           <button type="button" class="icon-btn icon-btn-primary"><i class="fas fa-plus"></i></button>
