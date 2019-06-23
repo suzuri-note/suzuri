@@ -1,23 +1,48 @@
 <template>
   <div id="app">
     <header>
-      <Navbar class="header"/>
+      <Navbar class="header" :hidden="hideStatusBar"/>
       <StatusBar class="statusbar"/>
     </header>
     <router-view class="router-view px-3 my-2"></router-view>
   </div>
 </template>
 
-<script>
-import Navbar from '@/components/globals/Navbar.vue'
-import StatusBar from '@/components/globals/StatusBar.vue'
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-export default {
-    name: 'app',
-    components: {
-        Navbar,
-        StatusBar
+import Navbar from '@/components/globals/Navbar.vue';
+import StatusBar from '@/components/globals/StatusBar.vue';
+
+@Component({ components: { Navbar, StatusBar }})
+export default class App extends Vue {
+  hideStatusBar!: boolean;
+  windowScrollY!: number;
+
+  constructor() {
+    super();
+    this.hideStatusBar = false;
+    this.windowScrollY = 0;
+  }
+
+  mounted() {
+    this.windowScrollY = window.scrollY;
+    window.addEventListener('scroll', this.onScrolled);
+  }
+
+  private onScrolled(): void {
+    if (window.scrollY < 24) {
+      this.hideStatusBar = false;
+    } else {
+      const diff = (window.scrollY - this.windowScrollY);
+      if (diff > 5) {
+        this.hideStatusBar = true;
+      } else if (diff < -10) {
+        this.hideStatusBar = false;
+      }
     }
+    this.windowScrollY = window.scrollY;
+  }
 }
 </script>
 
