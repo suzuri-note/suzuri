@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <header>
-      <Navbar class="header" :hidden="hideStatusBar"/>
-      <StatusBar class="statusbar"/>
+    <header :class="headerClass">
+      <Navbar />
     </header>
-    <router-view class="router-view px-3 my-2"></router-view>
+    <StatusBar :class="statusBarClass" />
+    <router-view class="router-view"></router-view>
   </div>
 </template>
 
@@ -13,6 +13,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 
 import Navbar from '@/components/globals/Navbar.vue';
 import StatusBar from '@/components/globals/StatusBar.vue';
+import appStore from '@/store/modules/app';
 
 @Component({ components: { Navbar, StatusBar }})
 export default class App extends Vue {
@@ -28,6 +29,21 @@ export default class App extends Vue {
   mounted() {
     this.windowScrollY = window.scrollY;
     window.addEventListener('scroll', this.onScrolled);
+  }
+
+  get headerClass(): any {
+    return {
+      'header': true,
+      'header-hidden': this.hideStatusBar,
+    };
+  }
+
+  get statusBarClass(): any {
+    return {
+      'statusbar': true,
+      'statusbar-hidden': appStore.statusbar.hidden,
+      'statusbar-on-header-hidden': this.hideStatusBar,
+    }
   }
 
   private onScrolled(): void {
@@ -59,16 +75,30 @@ export default class App extends Vue {
   align-items: center;
 }
 
-header {
+.header {
   position: fixed;
   width: 100vw;
   z-index: 1000;
+  transition: transform 150ms 0s ease;
+  transform: translateY(0%);
 }
-.header {
-  z-index: 1000;
+.header-hidden {
+  transform: translateY(-100%);
 }
+
 .statusbar {
+  position: fixed;
   z-index: 999;
+  transition: transform 300ms 0s ease, top 150ms 0s ease;
+  top: 3.25rem;
+  left: 0px;
+  transform: translateY(0%);
+}
+.statusbar-hidden {
+  transform: translateY(-100%);
+}
+.statusbar-on-header-hidden {
+  top: 0rem;
 }
 
 .router-view {

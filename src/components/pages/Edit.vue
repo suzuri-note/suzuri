@@ -1,6 +1,6 @@
 <template>
   <div id="edit">
-    <section class="editor px-sm-1 px-md-3 my-2">
+    <section id="edit-editor">
       <Editor 
         :id="id" 
         :body="body" 
@@ -11,9 +11,9 @@
         @changed-body="onChangedBody"
         />
     </section>
-    <section class="footer px-sm-1  px-3">
-      <hr class="nodisplay-sm">
-      <Footer class="nodisplay-sm"/>
+    <section id="edit-footer" class="nodisplay-sm">
+      <hr>
+      <Footer/>
     </section>
   </div>
 </template>
@@ -116,7 +116,11 @@ export default class EditPage extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+body {
+  overflow-x: hidden;
+}
+
 #edit {
   display: flex;
   flex-direction: column;
@@ -124,16 +128,16 @@ export default class EditPage extends Vue {
   height: 100vh;
 }
 
-.section.editor {
-  min-height: 100vh;
-  width: 100%;
-  max-width: 680px;
+#edit-editor {
+  min-height: calc(100% - 8rem);
 }
-section.footer {
+
+#edit-footer {
   width: 100%;
   max-width: 680px;
-  margin-top: 10rem;
   margin-bottom: 1.5rem;
+  margin-top: 4.5rem;
+  height: 2rem;
 }
 </style>
 

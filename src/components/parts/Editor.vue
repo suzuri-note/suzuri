@@ -1,10 +1,6 @@
 <template>
-    <div class="root">
-        <div class="body inner-container mb-2">
-            <div v-show="preview" class="body-preview" v-html="htmlBody"></div>
-            <textarea v-show="!preview" :id="'body-textarea-'+this.id" v-model="bodyModel" class="body-textarea" @input="onInput"></textarea>
-        </div>
-        <div class="editor-interface">
+    <div class="editor-root">
+        <div id="editor-interface" :class="editorInterfaceClass">
             <div class="editor-interface-left">
                 <button type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
                     <i class="fab fa-markdown editor-markdown"></i>
@@ -15,6 +11,10 @@
                    <i v-bind:class="doneButtonIconClass"></i>  
                 </button>
             </div>
+        </div>
+        <div id="editor-body" :class="editorBodyClass">
+            <div v-show="preview" class="editor-preview" v-html="htmlBody"></div>
+            <textarea v-show="!preview" id="editor-textarea" v-model="bodyModel" class="editor-textarea" @input="onInput" @change="onChange"></textarea>
         </div>
     </div>
 </template>
@@ -43,6 +43,10 @@ export default class Editor extends Vue {
     lastSavedBody!: string;
     timeout!: number | null;
     editing!: boolean;
+    editorInterfaceFixed!: boolean;
+    initialTextareaHeight!: number | null;
+
+    //windowInnerHeight!: number | null;
 
     @Emit()
     private clickedPreview(){
@@ -64,10 +68,21 @@ export default class Editor extends Vue {
         super();
         this.timeout = null;
         this.editing = false;
+        this.editorInterfaceFixed = false;
+        this.initialTextareaHeight = null;
+        //this.windowInnerHeight = null;
     }
 
     public mounted() {
+        const textarea: HTMLElement | null = document.getElementById('editor-textarea');
+        if (textarea != null) {
+            this.initialTextareaHeight = textarea.clientHeight;
+        }
         this.adjustBodyHeight();
+        //this.preventBodyScroll();
+        //this.windowInnerHeight = window.innerHeight;
+        //window.addEventListener('touchmove', this.onTouchMove);
+        window.addEventListener('scroll', this.onScroll);
     }
 
     get bodyModel(): string {
@@ -106,6 +121,19 @@ export default class Editor extends Vue {
         };
     }
 
+    get editorBodyClass(): any {
+        return {
+            'editor-body': true,
+            'editor-body-on-interface-fixed': this.editorInterfaceFixed,
+        }
+    }
+
+    get editorInterfaceClass(): any {
+        return {
+            'editor-interface': true,
+            'editor-interface-fixed': this.editorInterfaceFixed,
+        };
+    }
     
     
     public onClickedPreview(): void {
@@ -113,6 +141,11 @@ export default class Editor extends Vue {
     }
 
     public onInput(): void {
+        this.adjustBodyHeight(); // 本文textareaの高さ調節
+        this.autosave(); // localstorageへの保存
+    }
+
+    public onChange(): void {
         this.adjustBodyHeight(); // 本文textareaの高さ調節
         this.autosave(); // localstorageへの保存
     }
@@ -153,15 +186,31 @@ export default class Editor extends Vue {
     }
 
     private adjustBodyHeight(): void {
-        let bodyTextarea: HTMLElement | null = document.getElementById('body-textarea-'+this.id);
-        if (bodyTextarea != null) {
+        let bodyTextarea: HTMLElement | null = document.getElementById('editor-textarea');
+        if (bodyTextarea != null && this.initialTextareaHeight != null) {
+            // Change #editor's height to 'auto' when bodyTextarea.scrollHeight is taller than it
+            let editor: HTMLElement | null = document.getElementById('edit');
+            if (editor != null) {
+                console.log(bodyTextarea.scrollHeight, this.initialTextareaHeight);
+                if (bodyTextarea.scrollHeight > this.initialTextareaHeight) {
+                    editor.style.height = 'auto';
+                } else {
+                    editor.style.height = '100vh';
+                }
+            }
+
             // Save the scrollLeft, scrollTop values
             // ref. https://stackoverflow.com/questions/18262729/how-to-stop-window-jumping-when-typing-in-autoresizing-textarea/18262927#18262927
             const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 
             bodyTextarea.style.height = 'auto';
-            bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px';
+            if (bodyTextarea.scrollHeight > this.initialTextareaHeight) {
+                bodyTextarea.style.height = bodyTextarea.scrollHeight + 'px';
+            } else {
+                bodyTextarea.style.height = this.initialTextareaHeight + 'px';
+            }
+            
 
             const scrollLeftAfter = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
             const scrollTopAfter = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
@@ -170,54 +219,143 @@ export default class Editor extends Vue {
             window.scrollTo(scrollLeft, scrollTop);
         }
     }
+
+    private onScroll(): void {
+        const editorInterface = document.querySelector('#editor-interface');
+        if (editorInterface != null) {
+            if (editorInterface.getBoundingClientRect().top <= 0) {
+                this.editorInterfaceFixed = true;
+            }
+            if (window.pageYOffset <= this.convertRemToPixels(3.25)) {
+                this.editorInterfaceFixed = false;
+            }
+        }
+    }
+
+    private convertRemToPixels(rem: number): number {
+        const rootFontSize = getComputedStyle(document.documentElement).fontSize;
+        if (rootFontSize != null ) {
+            return rem * parseFloat(rootFontSize);
+            } else {
+                return rem * 16;
+            }
+    }
+
+    /*private preventBodyScroll(): void {
+        const textarea = document.querySelector('textarea');
+
+        window.addEventListener('touchmove', (e: Event): void => {
+            if (textarea != null) {
+                if (e.target === textarea && textarea.scrollTop !== 0 && textarea.scrollTop + textarea.clientHeight !== textarea.scrollHeight) {
+                    //e.stopPropagation();
+                    //console.log('e.stopPropagation');
+                    return;
+                } else {
+                    e.preventDefault();
+                    console.log('e.preventDefault');
+                }
+            }
+        }, { passive: false });
+
+        if (textarea != null) {
+            textarea.scrollTop = 1;
+            textarea.addEventListener('scroll', (e: Event): void => {
+                console.log('textarea.scroll');
+                if (textarea.scrollTop === 0) {
+                    textarea.scrollTop = 1;
+                } else if (textarea.scrollTop + textarea.clientHeight === textarea.scrollHeight) {
+                    textarea.scrollTop = textarea.scrollTop - 1;
+                }
+            }, { passive: false });
+        }
+    }
+
+    private onTouchMove(e: Event): void {
+        console.log('onTouchMove / this.windowInnerHeight=' + this.windowInnerHeight + ' / window.innerHeight=' + window.innerHeight);
+        if ( this.windowInnerHeight != window.innerHeight ) {
+            this.windowInnerHeight = window.innerHeight;
+            const convertRemToPixels = (rem: number): number => {
+                const rootFontSize = getComputedStyle(document.documentElement).fontSize;
+                if (rootFontSize != null ) {
+                    return rem * parseFloat(rootFontSize);
+                    } else {
+                        return rem * 16;
+                    }
+            }
+            let editorBodyDiv: HTMLElement | null = document.getElementById('editor-body');
+            if (editorBodyDiv != null) {
+                editorBodyDiv.style.height = 'auto';
+                editorBodyDiv.style.height = (window.innerHeight - convertRemToPixels(3) - convertRemToPixels(3.25)) + 'px';
+                console.log('editorBodyDiv.style.height', (window.innerHeight - convertRemToPixels(3) - convertRemToPixels(3.25)));
+            }
+        }
+    }*/
 }
 </script>
 
 
-<style scoped lang="scss">
-.root {
+<style lang="scss">
+.editor-root {
     text-align: left;
+    height: 100%;
 }
 
-.body-textarea {
+.editor-body {
+    height: 100%;
+    //margin-top: 0.75rem;
+}
+.editor-body-on-interface-fixed {
+    margin-top: 3.25rem;
+}
+
+.editor-textarea, .editor-preview  {
     overflow: hidden;   
     outline: none;
     border: none;
     resize: none;
     width: 100%;
-    height: auto;
-    min-height: 10rem;
+    min-height: calc(100% - 3.25rem);
     padding: 0;
     background-color: transparent;
 }
 @media (max-width: 575px) {
-    .body-textarea {
-        min-height: 100vh;
+    .editor-textarea, .editor-preview {
+        overflow-y: scroll;
+        scroll-snap-type: y mandatory;
+        padding: 0.75rem 1rem;
+        margin-top: 0;
+        min-height: calc(100vh - 3.25rem - 3.25rem);
     }
 }
 
 
-.body-preview {
+.editor-preview {
+    width: 100%;
     min-height: 10rem;
+    word-wrap: break-word;
 }
 
 .editor-interface {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
+    height: 3.25rem;
+    background-color: $bg-light;
+    width: 100%;
+    max-width: 680px;
+    
+}
+
+.editor-interface-fixed {
+    position: fixed;
+    z-index: 990;
+    top: 0;
 }
 
 @media (max-width: 575px) {
     .editor-interface {
-        position: fixed;
-        bottom: 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100vw;
-        left: 0px;
-        bottom: 0px;
-        padding: .75rem;
+        padding-left: .75rem;
+        padding-right: .75rem;
     }
 
     .editor-interface-preview {

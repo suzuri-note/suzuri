@@ -2,7 +2,7 @@
     <nav :class="navClass">
       <div class="navbar-brand">
         <a href="#" class="navbar-item text-brand">SUZURI</a>
-        <span class="ml-1">v1.0.5 alpha</span>
+        <span class="ml-1">v1.1.0 alpha</span>
       </div>
       
       <div class="navbar-menu">
@@ -21,19 +21,10 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component({})
 export default class Navbar extends Vue {
-  @Prop()
-  hidden: boolean;
-
-  constructor() {
-    super();
-    this.hidden = false;
-  }
-
   get navClass(): any {
     return {
       'navbar': true,
       'bg-dark': true,
-      'hidden': this.hidden,
     };
   }
 }
@@ -55,6 +46,7 @@ export default class Navbar extends Vue {
   padding: .5rem 1rem;
   transition: transform 150ms 0s ease;
   transform: translateY(0%);
+  height: 3.25rem;
 }
 
 .navbar-brand {
@@ -64,9 +56,5 @@ export default class Navbar extends Vue {
 
 i.fas {
   font-size: 1.25rem;
-}
-
-.hidden {
-    transform: translateY(-100%);
 }
 </style>

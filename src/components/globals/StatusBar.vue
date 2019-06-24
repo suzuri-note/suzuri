@@ -19,7 +19,6 @@ export default class StatusBar extends Vue {
     get statusBarClass(): any {
         return {
                 statusbar: true,
-                hidden: appStore.statusbar.hidden,
                 'bg-info': appStore.status.level === StatusLevel.Info,
                 'bg-warning': appStore.status.level === StatusLevel.Warning,
                 'bg-error': appStore.status.level === StatusLevel.Error,
@@ -40,21 +39,16 @@ export default class StatusBar extends Vue {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0.2rem 0.75rem;
+    padding: 0.25rem 0.75rem;
     font-size: 0.9rem;
     line-height: 1.0rem;
-    transition: transform 300ms 0s ease;
     overflow: hidden;
     position: relative;
-    transform: translateY(0%);
+    height: 1.5rem;
 }
 
 .status-message {
     text-align: center;
     flex-grow: 1;
-}
-
-.hidden {
-    transform: translateY(-100%);
 }
 </style>
