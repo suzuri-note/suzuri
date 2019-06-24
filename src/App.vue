@@ -17,12 +17,10 @@ import appStore from '@/store/modules/app';
 
 @Component({ components: { Navbar, StatusBar }})
 export default class App extends Vue {
-  hideStatusBar!: boolean;
   windowScrollY!: number;
 
   constructor() {
     super();
-    this.hideStatusBar = false;
     this.windowScrollY = 0;
   }
 
@@ -34,7 +32,7 @@ export default class App extends Vue {
   get headerClass(): any {
     return {
       'header': true,
-      'header-hidden': this.hideStatusBar,
+      'header-hidden': appStore.navbar.hidden,
     };
   }
 
@@ -42,19 +40,19 @@ export default class App extends Vue {
     return {
       'statusbar': true,
       'statusbar-hidden': appStore.statusbar.hidden,
-      'statusbar-on-header-hidden': this.hideStatusBar,
+      'statusbar-on-header-hidden': appStore.navbar.hidden,
     }
   }
 
   private onScrolled(): void {
     if (window.scrollY < 24) {
-      this.hideStatusBar = false;
+      appStore.showNavbar();
     } else {
       const diff = (window.scrollY - this.windowScrollY);
       if (diff > 5) {
-        this.hideStatusBar = true;
+        appStore.hideNavbar();
       } else if (diff < -10) {
-        this.hideStatusBar = false;
+        appStore.showNavbar();
       }
     }
     this.windowScrollY = window.scrollY;

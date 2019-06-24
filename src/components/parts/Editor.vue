@@ -39,14 +39,13 @@ export default class Editor extends Vue {
     body!: string;
     @Prop()
     preview!: boolean;
+    @Prop()
+    navbarHidden!: boolean;
 
     lastSavedBody!: string;
     timeout!: number | null;
     editing!: boolean;
-    editorInterfaceFixed!: boolean;
     initialTextareaHeight!: number | null;
-
-    //windowInnerHeight!: number | null;
 
     @Emit()
     private clickedPreview(){
@@ -68,9 +67,7 @@ export default class Editor extends Vue {
         super();
         this.timeout = null;
         this.editing = false;
-        this.editorInterfaceFixed = false;
         this.initialTextareaHeight = null;
-        //this.windowInnerHeight = null;
     }
 
     public mounted() {
@@ -79,10 +76,6 @@ export default class Editor extends Vue {
             this.initialTextareaHeight = textarea.clientHeight;
         }
         this.adjustBodyHeight();
-        //this.preventBodyScroll();
-        //this.windowInnerHeight = window.innerHeight;
-        //window.addEventListener('touchmove', this.onTouchMove);
-        window.addEventListener('scroll', this.onScroll);
     }
 
     get bodyModel(): string {
@@ -124,14 +117,13 @@ export default class Editor extends Vue {
     get editorBodyClass(): any {
         return {
             'editor-body': true,
-            'editor-body-on-interface-fixed': this.editorInterfaceFixed,
         }
     }
 
     get editorInterfaceClass(): any {
         return {
             'editor-interface': true,
-            'editor-interface-fixed': this.editorInterfaceFixed,
+            'editor-interface-on-navbar-hidden': this.navbarHidden,
         };
     }
     
@@ -164,12 +156,6 @@ export default class Editor extends Vue {
         }
     }
 
-    /*@Watch('body')
-    public onChangedBody(val: boolean, oldVal: boolean): void {
-        this.adjustBodyHeight(); // 本文textareaの高さ調節
-        this.autosave(); // localstorageへの保存
-    }*/
-
     private autosave(): void {
         if (this.body !== this.lastSavedBody) {
             if (this.timeout) {
@@ -191,7 +177,6 @@ export default class Editor extends Vue {
             // Change #editor's height to 'auto' when bodyTextarea.scrollHeight is taller than it
             let editor: HTMLElement | null = document.getElementById('edit');
             if (editor != null) {
-                console.log(bodyTextarea.scrollHeight, this.initialTextareaHeight);
                 if (bodyTextarea.scrollHeight > this.initialTextareaHeight) {
                     editor.style.height = 'auto';
                 } else {
@@ -219,77 +204,6 @@ export default class Editor extends Vue {
             window.scrollTo(scrollLeft, scrollTop);
         }
     }
-
-    private onScroll(): void {
-        const editorInterface = document.querySelector('#editor-interface');
-        if (editorInterface != null) {
-            if (editorInterface.getBoundingClientRect().top <= 0) {
-                this.editorInterfaceFixed = true;
-            }
-            if (window.pageYOffset <= this.convertRemToPixels(3.25)) {
-                this.editorInterfaceFixed = false;
-            }
-        }
-    }
-
-    private convertRemToPixels(rem: number): number {
-        const rootFontSize = getComputedStyle(document.documentElement).fontSize;
-        if (rootFontSize != null ) {
-            return rem * parseFloat(rootFontSize);
-            } else {
-                return rem * 16;
-            }
-    }
-
-    /*private preventBodyScroll(): void {
-        const textarea = document.querySelector('textarea');
-
-        window.addEventListener('touchmove', (e: Event): void => {
-            if (textarea != null) {
-                if (e.target === textarea && textarea.scrollTop !== 0 && textarea.scrollTop + textarea.clientHeight !== textarea.scrollHeight) {
-                    //e.stopPropagation();
-                    //console.log('e.stopPropagation');
-                    return;
-                } else {
-                    e.preventDefault();
-                    console.log('e.preventDefault');
-                }
-            }
-        }, { passive: false });
-
-        if (textarea != null) {
-            textarea.scrollTop = 1;
-            textarea.addEventListener('scroll', (e: Event): void => {
-                console.log('textarea.scroll');
-                if (textarea.scrollTop === 0) {
-                    textarea.scrollTop = 1;
-                } else if (textarea.scrollTop + textarea.clientHeight === textarea.scrollHeight) {
-                    textarea.scrollTop = textarea.scrollTop - 1;
-                }
-            }, { passive: false });
-        }
-    }
-
-    private onTouchMove(e: Event): void {
-        console.log('onTouchMove / this.windowInnerHeight=' + this.windowInnerHeight + ' / window.innerHeight=' + window.innerHeight);
-        if ( this.windowInnerHeight != window.innerHeight ) {
-            this.windowInnerHeight = window.innerHeight;
-            const convertRemToPixels = (rem: number): number => {
-                const rootFontSize = getComputedStyle(document.documentElement).fontSize;
-                if (rootFontSize != null ) {
-                    return rem * parseFloat(rootFontSize);
-                    } else {
-                        return rem * 16;
-                    }
-            }
-            let editorBodyDiv: HTMLElement | null = document.getElementById('editor-body');
-            if (editorBodyDiv != null) {
-                editorBodyDiv.style.height = 'auto';
-                editorBodyDiv.style.height = (window.innerHeight - convertRemToPixels(3) - convertRemToPixels(3.25)) + 'px';
-                console.log('editorBodyDiv.style.height', (window.innerHeight - convertRemToPixels(3) - convertRemToPixels(3.25)));
-            }
-        }
-    }*/
 }
 </script>
 
@@ -302,10 +216,7 @@ export default class Editor extends Vue {
 
 .editor-body {
     height: 100%;
-    //margin-top: 0.75rem;
-}
-.editor-body-on-interface-fixed {
-    margin-top: 3.25rem;
+    padding-top: 3.25rem;
 }
 
 .editor-textarea, .editor-preview  {
@@ -320,14 +231,11 @@ export default class Editor extends Vue {
 }
 @media (max-width: 575px) {
     .editor-textarea, .editor-preview {
-        overflow-y: scroll;
-        scroll-snap-type: y mandatory;
         padding: 0.75rem 1rem;
         margin-top: 0;
         min-height: calc(100vh - 3.25rem - 3.25rem);
     }
 }
-
 
 .editor-preview {
     width: 100%;
@@ -343,13 +251,14 @@ export default class Editor extends Vue {
     background-color: $bg-light;
     width: 100%;
     max-width: 680px;
-    
-}
-
-.editor-interface-fixed {
     position: fixed;
     z-index: 990;
-    top: 0;
+    top: 3.25rem;
+    transition: top 150ms 0s ease;
+}
+
+.editor-interface-on-navbar-hidden {
+    top: 0rem;
 }
 
 @media (max-width: 575px) {

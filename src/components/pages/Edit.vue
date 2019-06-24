@@ -5,6 +5,7 @@
         :id="id" 
         :body="body" 
         :preview="preview" 
+        :navbarHidden="navbarHidden"
         @clicked-done="onClieckedDone"
         @clicked-preview="onClickedPreview"
         @autosave-emitted="onAutosaveEmitted"
@@ -69,6 +70,10 @@ export default class EditPage extends Vue {
         const { body } = localstorage.read();
         this.body = body;
     }
+  }
+
+  get navbarHidden(): boolean {
+    return appStore.navbar.hidden;
   }
 
   public onClieckedDone() {
