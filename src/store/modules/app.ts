@@ -11,6 +11,7 @@ export enum StatusLevel {
 export interface IAppState {
     status: IStatus;
     statusbar: IStatusBar;
+    navbar: INavbar;
 }
 
 export interface IStatus {
@@ -20,6 +21,10 @@ export interface IStatus {
 }
 
 export interface IStatusBar {
+    hidden: boolean;
+}
+
+export interface INavbar {
     hidden: boolean;
 }
 
@@ -33,6 +38,9 @@ class App extends VuexModule implements IAppState {
     public statusbar: IStatusBar = {
         hidden: true,
     };
+    public navbar: INavbar = {
+        hidden: false,
+    };
 
     @Action
     public setStatus(status: IStatus): void {
@@ -44,7 +52,7 @@ class App extends VuexModule implements IAppState {
         if (status.level === StatusLevel.Info) {
             // 3秒後に自動非表示
             const timeoutID = setTimeout(() => {
-                this.resetStatus()
+                this.resetStatus();
             }, 3000);
             this.SET_STATUS_TIMEOUT_ID(timeoutID);
         }
@@ -53,9 +61,19 @@ class App extends VuexModule implements IAppState {
     @Action
     public resetStatus(): void {
         this.HIDE_STATUS_BAR(); // StatusBarが300ms秒かけて隠れる（ref. StatusBarのhidden class）
-        setTimeout(()=> {
+        setTimeout(() => {
             this.RESET_STATUS(); // 300ms秒後にStatusBarから値が消える
         }, 300);
+    }
+
+    @Action
+    public showNavbar(): void {
+        this.SHOW_NAVBAR();
+    }
+
+    @Action
+    public hideNavbar(): void {
+        this.HIDE_NAVBAR();
     }
 
     @Mutation
@@ -83,6 +101,16 @@ class App extends VuexModule implements IAppState {
     @Mutation
     private HIDE_STATUS_BAR(): void {
         this.statusbar.hidden = true;
+    }
+
+    @Mutation
+    private SHOW_NAVBAR(): void {
+        this.navbar.hidden = false;
+    }
+
+    @Mutation
+    private HIDE_NAVBAR(): void {
+        this.navbar.hidden = true;
     }
 }
 

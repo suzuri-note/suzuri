@@ -94,10 +94,10 @@ a {
 
 // muted color
 .text-muted {
-  color: $muted;
+  color: $text-muted!important;
 }
 .text-muted:hover {
-  color: $muted;
+  color: $text-muted-variant!important;
 }
 
 // border color
@@ -111,8 +111,6 @@ hr {
   padding: 0.25rem 0.5rem;
 }
 .inner-container {
-  border: 1px solid $border;
-  border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
 }
 
@@ -130,4 +128,10 @@ hr {
 .bg-error {
   background-color: $bg-error!important;
   color: $on-error!important;
+}
+
+@media (max-width: 575px) { 
+  .nodisplay-sm {
+    display: none;
+  }
 }

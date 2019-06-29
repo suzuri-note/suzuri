@@ -1,57 +1,61 @@
 <template>
   <div id="app">
-    <div class="global-navigation">
-      <Navbar class="navbar"/>
-      <StatusBar class="statusbar"/>
-    </div>
-    <section class="editor px-3 my-2">
-      <Editor/>
-    </section>
-    <section class="note px-3">
-      <DailyNote v-for="(value, key) in note" :key="key" :date="key" :memos="value"/>
-    </section>
-    <section class="footer px-3">
-      <hr>
-      <Footer/>
-    </section>
+    <header :class="headerClass">
+      <Navbar />
+    </header>
+    <StatusBar :class="statusBarClass" />
+    <router-view class="router-view"></router-view>
   </div>
 </template>
 
-<script>
-import Navbar from '@/components/Navbar.vue'
-import StatusBar from '@/components/StatusBar.vue'
-import Editor from '@/components/Editor.vue'
-import Footer from '@/components/Footer.vue'
-import DailyNote from '@/components/DailyNote.vue'
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import noteService from '@/services/note'
-import noteStore from '@/store/modules/note'
-import datelib from '@/lib/datelib'
+import Navbar from '@/components/globals/Navbar.vue';
+import StatusBar from '@/components/globals/StatusBar.vue';
+import appStore from '@/store/modules/app';
 
-export default {
-  name: 'app',
-  components: {
-    Navbar,
-    StatusBar,
-    Editor,
-    Footer,
-    DailyNote
-  },
-  computed: {
-    note: () => noteStore.dailyNote
-  },
-  created: function() {
-    noteService.list()
-      .then(result => {
-        if (result.status === "success") {
-          noteStore.replaceList(result.data)
-        }
-      })
-      .catch(err => {
-        const level = StatusLevel.Warning
-        const message = err
-        appStore.setStatus({ level, message })
-      })
+@Component({ components: { Navbar, StatusBar }})
+export default class App extends Vue {
+  windowScrollY!: number;
+
+  constructor() {
+    super();
+    this.windowScrollY = 0;
+  }
+
+  mounted() {
+    this.windowScrollY = window.scrollY;
+    window.addEventListener('scroll', this.onScrolled);
+  }
+
+  get headerClass(): any {
+    return {
+      'header': true,
+      'header-hidden': appStore.navbar.hidden,
+    };
+  }
+
+  get statusBarClass(): any {
+    return {
+      'statusbar': true,
+      'statusbar-hidden': appStore.statusbar.hidden,
+      'statusbar-on-header-hidden': appStore.navbar.hidden,
+    }
+  }
+
+  private onScrolled(): void {
+    if (window.scrollY < 24) {
+      appStore.showNavbar();
+    } else {
+      const diff = (window.scrollY - this.windowScrollY);
+      if (diff > 5) {
+        appStore.hideNavbar();
+      } else if (diff < -10) {
+        appStore.showNavbar();
+      }
+    }
+    this.windowScrollY = window.scrollY;
   }
 }
 </script>
@@ -69,37 +73,36 @@ export default {
   align-items: center;
 }
 
-.global-navigation {
+.header {
   position: fixed;
   width: 100vw;
   z-index: 1000;
+  transition: transform 150ms 0s ease;
+  transform: translateY(0%);
 }
-.navbar {
-  z-index: 1000;
+.header-hidden {
+  transform: translateY(-100%);
 }
+
 .statusbar {
+  position: fixed;
   z-index: 999;
+  transition: transform 300ms 0s ease, top 150ms 0s ease;
+  top: 3.25rem;
+  left: 0px;
+  transform: translateY(0%);
 }
-section.editor {
-  min-height: 100vh;
-  padding-top: 4.125rem;
-  width: 100%;
-  max-width: 680px;
+.statusbar-hidden {
+  transform: translateY(-100%);
 }
-section.note {
-  width: 100%;
-  max-width: 680px;
-  margin-bottom: 1rem;
+.statusbar-on-header-hidden {
+  top: 0rem;
 }
-section.footer {
-  width: 100%;
-  max-width: 680px;
-  margin-bottom: 1rem;
+
+.router-view {
+    padding-top: 3.25rem;
+    width: 100%;
+    max-width: 680px;
 }
 </style>
 
-
-<!-- Global Setting-->
-<style lang="scss">
-@import "./style/global.scss";
-</style>
