@@ -34,35 +34,19 @@ const md = new MarkdownIt();
 @Component({})
 export default class Editor extends Vue {
     @Prop()
-    id!: string | null;
+    public id!: string | null;
     @Prop()
-    body!: string;
+    public body!: string;
     @Prop()
-    preview!: boolean;
+    public preview!: boolean;
     @Prop()
-    navbarHidden!: boolean;
+    public navbarHidden!: boolean;
 
-    lastSavedBody!: string;
-    timeout!: number | null;
-    editing!: boolean;
-    initialTextareaHeight!: number | null;
+    public lastSavedBody!: string;
+    public timeout!: number | null;
+    public editing!: boolean;
+    public initialTextareaHeight!: number | null;
 
-    @Emit()
-    private clickedPreview(){
-    }
-
-    @Emit()
-    private clickedDone(){
-    }
-
-    @Emit()
-    private autosaveEmitted(){
-    }
-
-    @Emit()
-    private changedBody(newValue: string){
-    }
-    
     constructor() {
         super();
         this.timeout = null;
@@ -84,14 +68,13 @@ export default class Editor extends Vue {
 
     set bodyModel(newValue: string) {
         this.changedBody(newValue);
-        
     }
 
     get htmlBody(): string {
         return md.render(this.body);
     }
 
-    get previewButtonClass(): any {
+    get previewButtonClass(): object {
         return {
             'icon-btn': true,
             'editor-interface-preview': true,
@@ -100,9 +83,9 @@ export default class Editor extends Vue {
         };
     }
 
-    get doneButtonIconClass(): any {
+    get doneButtonIconClass(): object {
         return {
-            fas: true,
+            'fas': true,
             'icon-large': true,
             'icon-btn-muted': true,
             'editor-interface-done': true,
@@ -114,20 +97,19 @@ export default class Editor extends Vue {
         };
     }
 
-    get editorBodyClass(): any {
+    get editorBodyClass(): object {
         return {
             'editor-body': true,
-        }
+        };
     }
 
-    get editorInterfaceClass(): any {
+    get editorInterfaceClass(): object {
         return {
             'editor-interface': true,
             'editor-interface-on-navbar-hidden': this.navbarHidden,
         };
     }
-    
-    
+
     public onClickedPreview(): void {
         this.clickedPreview();
     }
@@ -141,7 +123,6 @@ export default class Editor extends Vue {
         this.adjustBodyHeight(); // 本文textareaの高さ調節
         this.autosave(); // localstorageへの保存
     }
-    
 
     public onClickedDone(): void {
         this.clickedDone();
@@ -151,7 +132,7 @@ export default class Editor extends Vue {
     public onChangedPreview(val: boolean, oldVal: boolean): void {
         if (val === false) {
             this.$nextTick(function() {
-                this.adjustBodyHeight() // 本文textareaの高さ調節
+                this.adjustBodyHeight(); // 本文textareaの高さ調節
             });
         }
     }
@@ -162,8 +143,8 @@ export default class Editor extends Vue {
                 clearTimeout(this.timeout);
             }
             this.editing = true;
-            var self = this;
-            this.timeout = setTimeout(function(){
+            const self = this;
+            this.timeout = setTimeout(() => {
                 self.autosaveEmitted();
                 self.lastSavedBody = self.body;
                 self.editing = false;
@@ -172,10 +153,10 @@ export default class Editor extends Vue {
     }
 
     private adjustBodyHeight(): void {
-        let bodyTextarea: HTMLElement | null = document.getElementById('editor-textarea');
+        const bodyTextarea: HTMLElement | null = document.getElementById('editor-textarea');
         if (bodyTextarea != null && this.initialTextareaHeight != null) {
             // Change #editor's height to 'auto' when bodyTextarea.scrollHeight is taller than it
-            let editor: HTMLElement | null = document.getElementById('edit');
+            const editor: HTMLElement | null = document.getElementById('edit');
             if (editor != null) {
                 if (bodyTextarea.scrollHeight > this.initialTextareaHeight) {
                     editor.style.height = 'auto';
@@ -195,14 +176,33 @@ export default class Editor extends Vue {
             } else {
                 bodyTextarea.style.height = this.initialTextareaHeight + 'px';
             }
-            
 
             const scrollLeftAfter = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
             const scrollTopAfter = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-            
+
             // Restore the scrollLeft, scrollTop values after resizing the textarea
             window.scrollTo(scrollLeft, scrollTop);
         }
+    }
+
+    @Emit()
+    private clickedPreview(): void {
+        return;
+    }
+
+    @Emit()
+    private clickedDone(): void {
+        return;
+    }
+
+    @Emit()
+    private autosaveEmitted(): void {
+        return;
+    }
+
+    @Emit()
+    private changedBody(newValue: string): void {
+        return;
     }
 }
 </script>

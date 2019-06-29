@@ -17,15 +17,11 @@ import { IMemoState } from '@/store/modules/note';
 
 @Component({ components: { Page } })
 export default class DialyNote extends Vue {
-    @Prop({ type: String })
-    date: string;
+    @Prop()
+    public date!: string;
 
-    @Prop({ type: Array })
-    memos: IMemoState[];
-
-    constructor() {
-        super();
-    }
+    @Prop()
+    public memos!: IMemoState[];
 }
 </script>
 

@@ -141,9 +141,9 @@ const remove = async (id: string): Promise<IIDResponse> => {
 // filter mock
 const filter = async (filterType: string): Promise<IListResponse> => {
   switch (filterType) {
-    case "ALL":
+    case 'ALL':
       return list();
-    case "PUBLIC":
+    case 'PUBLIC':
       return new Promise((resolve: (value?: IListResponse) => void, reject: (reason?: any) => void) => {
         resolve({
           status: 'success',
@@ -154,7 +154,7 @@ const filter = async (filterType: string): Promise<IListResponse> => {
               id: 'PUBLIC_MEMO',
               createdAt: 0,
               updatedAt: 0,
-            }
+            },
           ],
         });
       });
@@ -169,7 +169,7 @@ const filter = async (filterType: string): Promise<IListResponse> => {
               id: 'PRIVATE_MEMO',
               createdAt: 0,
               updatedAt: 0,
-            }
+            },
           ],
         });
       });

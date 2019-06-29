@@ -33,9 +33,9 @@ import Footer from '@/components/parts/Footer.vue';
 
 @Component({ components: { Editor, Footer } })
 export default class EditPage extends Vue {
-  id!: string | null;
-  body!: string;
-  preview!: boolean;
+  public id!: string | null;
+  public body!: string;
+  public preview!: boolean;
 
   constructor() {
     super();
@@ -45,9 +45,9 @@ export default class EditPage extends Vue {
   }
 
   public created() {
-    const id: string | (string | null)[] = this.$route.query.id;
+    const id: string | Array<string | null> = this.$route.query.id;
     if (id instanceof Array) {
-      if (id[0] != undefined) {
+      if (id[0] !== undefined) {
         this.id = id[0];
       }
     } else {
@@ -98,7 +98,7 @@ export default class EditPage extends Vue {
             const level = StatusLevel.Info;
             const message = 'Successfully Saved';
             appStore.setStatus({ level, message });
-        } 
+        }
     })
     .catch((err: Error) => {
         const level = StatusLevel.Error;

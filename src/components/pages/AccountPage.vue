@@ -49,7 +49,7 @@ export default class AccountPage extends Vue {
         return filterStore.filters;
     }
 
-    created() {
+    public created() {
         noteService.list()
             .then((result: any) => {
                 if (result.status === 'success') {
@@ -63,7 +63,7 @@ export default class AccountPage extends Vue {
             });
     }
 
-    onClickedFilterItem(index: number): void {
+    public onClickedFilterItem(index: number): void {
         filterStore.switch(index);
         noteService.filter(filterStore.filters[index].type)
             .then((result: any) => {

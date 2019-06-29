@@ -17,31 +17,31 @@ import appStore from '@/store/modules/app';
 
 @Component({ components: { Navbar, StatusBar }})
 export default class App extends Vue {
-  windowScrollY!: number;
+  public windowScrollY!: number;
 
   constructor() {
     super();
     this.windowScrollY = 0;
   }
 
-  mounted() {
+  public mounted() {
     this.windowScrollY = window.scrollY;
     window.addEventListener('scroll', this.onScrolled);
   }
 
-  get headerClass(): any {
+  get headerClass(): object {
     return {
       'header': true,
       'header-hidden': appStore.navbar.hidden,
     };
   }
 
-  get statusBarClass(): any {
+  get statusBarClass(): object {
     return {
       'statusbar': true,
       'statusbar-hidden': appStore.statusbar.hidden,
       'statusbar-on-header-hidden': appStore.navbar.hidden,
-    }
+    };
   }
 
   private onScrolled(): void {

@@ -21,9 +21,8 @@ class Filter extends VuexModule implements IFilterState {
     public filters: IFilter[] = [
         { type: FilterType.All, active: true },
         { type: FilterType.Public, active: false},
-        { type: FilterType.Private, active: false},
+        { type: FilterType.Private, active: false },
     ];
-    
 
     @Action
     public switch(index: number): void {
