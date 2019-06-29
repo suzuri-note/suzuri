@@ -4,18 +4,18 @@
             <span>{{ date }}</span>
         </div>
         <div class="pages">
-            <Page class="mb-4" v-for="memo in memos" :key="memo.id" :id="memo.id" :memoObject="memo"/>
+            <Memo class="mb-4" v-for="memo in memos" :key="memo.id" :id="memo.id" :memoObject="memo"/>
         </div>
     </div>
 </template>
 
 
 <script lang="ts">
-import Page from '@/components/parts/Page.vue';
+import Memo from '@/components/parts/Memo.vue';
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { IMemoState } from '@/store/modules/note';
 
-@Component({ components: { Page } })
+@Component({ components: { Memo } })
 export default class DialyNote extends Vue {
     @Prop()
     public date!: string;
