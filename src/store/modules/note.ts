@@ -40,17 +40,17 @@ class Note extends VuexModule implements INoteState {
     }
 
     // actions
-    @Action({ commit: 'SAVE' })
-    public save(memo: IMemoState) {
-        return memo;
+    @Action
+    public save(memo: IMemoState): void {
+        this.SAVE(memo);
     }
-    @Action({ commit: 'REPLACE_LIST' })
-    public replaceList(memos: IMemoState[]) {
-        return memos;
+    @Action
+    public replaceList(memos: IMemoState[]): void {
+        this.REPLACE_LIST(memos);
     }
-    @Action({ commit: 'REMOVE' })
-    public remove(id: string) {
-        return id;
+    @Action
+    public remove(id: string): void {
+        this.REMOVE(id);
     }
 
     // mutation

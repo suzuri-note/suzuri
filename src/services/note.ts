@@ -138,9 +138,52 @@ const remove = async (id: string): Promise<IIDResponse> => {
   });
 };
 
+// filter mock
+const filter = async (filterType: string): Promise<IListResponse> => {
+  switch (filterType) {
+    case "ALL":
+      return list();
+    case "PUBLIC":
+      return new Promise((resolve: (value?: IListResponse) => void, reject: (reason?: any) => void) => {
+        resolve({
+          status: 'success',
+          data: [
+            {
+              title: 'Public Memo',
+              body: 'Public Memo',
+              id: 'PUBLIC_MEMO',
+              createdAt: 0,
+              updatedAt: 0,
+            }
+          ],
+        });
+      });
+    case 'PRIVATE':
+      return new Promise((resolve: (value?: IListResponse) => void, reject: (reason?: any) => void) => {
+        resolve({
+          status: 'success',
+          data: [
+            {
+              title: 'Private Memo',
+              body: 'Private Memo',
+              id: 'PRIVATE_MEMO',
+              createdAt: 0,
+              updatedAt: 0,
+            }
+          ],
+        });
+      });
+    default:
+      return new Promise((resolve: (value?: IListResponse) => void, reject: (reason?: any) => void) => {
+        reject('unknown filter type');
+      });
+  }
+};
+
 export default {
   save,
   get,
   list,
   remove,
+  filter,
 };

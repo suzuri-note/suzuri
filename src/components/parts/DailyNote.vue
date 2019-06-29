@@ -1,7 +1,7 @@
 <template>
     <div class="root">
         <div class="date text-muted mb-2">
-            {{ date }}
+            <span>{{ date }}</span>
         </div>
         <div class="pages">
             <Page class="mb-4" v-for="memo in memos" :key="memo.id" :id="memo.id" :memoObject="memo"/>
@@ -18,15 +18,13 @@ import { IMemoState } from '@/store/modules/note';
 @Component({ components: { Page } })
 export default class DialyNote extends Vue {
     @Prop({ type: String })
-    date: string
+    date: string;
 
     @Prop({ type: Array })
-    memos: IMemoState[]
+    memos: IMemoState[];
 
     constructor() {
         super();
-        this.date = '';
-        this.memos = [];
     }
 }
 </script>
@@ -34,7 +32,7 @@ export default class DialyNote extends Vue {
 <style scoped lang="scss">
 .date {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
 }
 </style>
