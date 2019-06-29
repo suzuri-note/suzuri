@@ -16,16 +16,16 @@ export default class StatusBar extends Vue {
         return appStore.status.message;
     }
 
-    get statusBarClass(): any {
+    get statusBarClass(): object {
         return {
-                statusbar: true,
+                'statusbar': true,
                 'bg-info': appStore.status.level === StatusLevel.Info,
                 'bg-warning': appStore.status.level === StatusLevel.Warning,
                 'bg-error': appStore.status.level === StatusLevel.Error,
         };
     }
 
-    onClickedOutside() {
+    public onClickedOutside() {
         if (!appStore.statusbar.hidden) {
             appStore.resetStatus();
         }

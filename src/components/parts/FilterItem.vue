@@ -13,13 +13,13 @@ import { FilterType } from '@/store/modules/filter';
 @Component({})
 export default class FilterItem extends Vue {
     @Prop()
-    filterType!: string;
+    public filterType!: string;
 
     @Prop()
-    filterActive!: boolean;
+    public filterActive!: boolean;
 
     get label(): string | null {
-        switch(this.filterType) {
+        switch (this.filterType) {
             case FilterType.All:
                 return 'All';
                 break;
@@ -34,12 +34,13 @@ export default class FilterItem extends Vue {
         }
     }
 
-    @Emit()
-    private click(){
+    public onClickFilterItem(): void {
+        this.click();
     }
 
-    public onClickFilterItem() {
-        this.click();
+    @Emit()
+    private click(): void {
+        return;
     }
 }
 </script>

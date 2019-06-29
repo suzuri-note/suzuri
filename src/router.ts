@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from '@/components/pages/Home.vue';
-import Edit from '@/components/pages/Edit.vue';
-import Account from '@/components/pages/Account.vue';
+import HomePage from '@/components/pages/HomePage.vue';
+import EditPage from '@/components/pages/EditPage.vue';
+import AccountPage from '@/components/pages/AccountPage.vue';
 
 Vue.use(Router);
 
@@ -13,17 +13,17 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home,
+      component: HomePage,
     },
     {
       path: '/edit',
       name: 'edit',
-      component: Edit,
+      component: EditPage,
     },
     {
       path: '/account',
       name: 'account',
-      component: Account,
+      component: AccountPage,
     },
   ],
 });

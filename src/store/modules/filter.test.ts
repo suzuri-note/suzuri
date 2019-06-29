@@ -4,7 +4,7 @@ test('test filter initialization', async () => {
     expect(filterStore.filters[0].active).toBe(true);
 });
 
-test('test filter.switch', async() => {
+test('test filter.switch', async () => {
     filterStore.switch(1);
     filterStore.filters.forEach((currentFilter: IFilter, currentIndex: number): void => {
         if (currentIndex === 1) {

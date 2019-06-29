@@ -21,7 +21,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component({})
 export default class Navbar extends Vue {
-  get navClass(): any {
+  get navClass(): object {
     return {
       'navbar': true,
       'bg-dark': true,
