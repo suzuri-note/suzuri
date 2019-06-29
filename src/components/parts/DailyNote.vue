@@ -1,9 +1,9 @@
 <template>
-    <div class="root">
+    <div>
         <div class="date text-muted mb-2">
             <span>{{ date }}</span>
         </div>
-        <div class="pages">
+        <div class="memos">
             <Memo class="mb-4" v-for="memo in memos" :key="memo.id" :id="memo.id" :memoObject="memo"/>
         </div>
     </div>
@@ -25,10 +25,15 @@ export default class DialyNote extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .date {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.memos {
+    display: flex;
+    flex-direction: column;
 }
 </style>
