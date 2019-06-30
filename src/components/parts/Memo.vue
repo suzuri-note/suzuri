@@ -1,15 +1,15 @@
 <template>
     <section class="memo container bg-surface">
         <div class="memo-header">
-            <span><a class="text-on-surface" :href="'/memo/' + this.memo.id">{{ memo.createdAt }}</a></span>
-            <div class="buttons">
+            <span><a id ="memo-permalink" class="text-muted" :href="'/memo/' + this.memo.id">{{ timestamp }}</a></span>
+            <div class="buttons" v-click-outside="closeDropdownMenu">
                 <button type="button" @click="onClickOption" class="icon-btn icon-btn-brand">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
             </div>
             <div v-show="optionOpen" class="dropdown-menu">
                 <router-link :to="'/edit/' + this.memo.id" @click.stop.prevent="onClickEdit" class="dropdown-item">Edit</router-link>
-                <a href="" @click.stop.prevent="" class="dropdown-item">Copy URL</a>
+                <clipboard-copy for="memo-permalink" @click.stop.prevent="closeDropdownMenu" class="dropdown-item">Copy URL</clipboard-copy>
                 <a href="" @click.stop.prevent="onClickedDelete" class="dropdown-item text-error">Delete</a>
             </div>
         </div>
@@ -22,21 +22,29 @@
 </template>
 
 <script lang="ts">
-import removeMd from 'remove-markdown';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-
+import ClickOutside from 'vue-click-outside';
 import router from '@/router';
 
 import noteService from '@/services/note';
 import noteStore, { IMemoState } from '@/store/modules/note';
 import appStore, { StatusLevel } from '@/store/modules/app';
+import datelib from '@/lib/datelib';
+
+import removeMd from 'remove-markdown';
+import '@github/clipboard-copy-element';
+
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo('en-US');
 
 interface IMemoSummary {
     title: string;
     body: string;
 }
 
-@Component({})
+@Component({ directives: { ClickOutside } })
 export default class Memo extends Vue {
     @Prop()
     public memo!: IMemoState;
@@ -50,6 +58,23 @@ export default class Memo extends Vue {
         const title = lines[0];
         const body = lines.slice(1).join('\n');
         return { title, body };
+    }
+
+    get timestamp(): string {
+        const today = new Date().setHours(0, 0, 0, 0);
+        if (this.memo.updatedAt >= today) {
+            return timeAgo.format(this.memo.updatedAt);
+        } else {
+            return datelib.formatFromUnixtime(this.memo.updatedAt);
+        }
+    }
+
+    public created(): void {
+        document.addEventListener('clipboard-copy', (): void =>  {
+            const level = StatusLevel.Info;
+            const message = 'URL Copied';
+            appStore.setStatus({ level, message });
+        });
     }
 
     public onClickOption(): void {
@@ -80,6 +105,10 @@ export default class Memo extends Vue {
 
     public onClickedMemoContent(): void {
         router.push('/memo/' + this.memo.id );
+    }
+
+    public closeDropdownMenu(): void {
+        this.optionOpen = false;
     }
 }
 </script>
@@ -152,5 +181,9 @@ export default class Memo extends Vue {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+}
+
+clipboard-copy {
+    cursor: pointer;
 }
 </style>
