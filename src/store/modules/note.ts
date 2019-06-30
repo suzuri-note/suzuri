@@ -1,6 +1,10 @@
 import { Mutation, MutationAction, Action, VuexModule, getModule, Module } from 'vuex-module-decorators';
 import store from '@/store';
-import datelib from '@/lib/datelib';
+
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+TimeAgo.addLocale(en);
+const timeAgo = new TimeAgo('en-US');
 
 export interface IMemoState {
     id: string;
@@ -28,13 +32,22 @@ class Note extends VuexModule implements INoteState {
     get dailyNote(): IDailyNoteState {
         const tmpMemos = this.memos.concat();
         tmpMemos.sort((a: IMemoState, b: IMemoState): number => {
-            if (a.createdAt > b.createdAt) { return -1; }
-            if (a.createdAt < b.createdAt) { return 1; }
+            if (a.updatedAt > b.updatedAt) { return -1; }
+            if (a.updatedAt < b.updatedAt) { return 1; }
             return 0;
         });
         return tmpMemos.reduce((accumulator: IDailyNoteState, currentValue: IMemoState): IDailyNoteState => {
-            const yyyymmdd: string = datelib.formatFromUnixtime(currentValue.createdAt);
-            accumulator[yyyymmdd] = accumulator[yyyymmdd] ? accumulator[yyyymmdd].concat(currentValue) : [currentValue];
+            const today = new Date().setHours(0, 0, 0, 0);
+            const yesterday = today - 60 * 60 * 24 * 1000;
+            let timestamp: string;
+            if (currentValue.updatedAt >= today) {
+                timestamp = 'Today';
+            } else if (currentValue.updatedAt >= yesterday) {
+                timestamp = 'Yesterday';
+            } else {
+                timestamp = timeAgo.format(currentValue.updatedAt);
+            }
+            accumulator[timestamp] = accumulator[timestamp] ? accumulator[timestamp].concat(currentValue) : [currentValue];
             return Object.assign({}, accumulator);
         }, {});
     }
