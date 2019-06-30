@@ -5,8 +5,7 @@
   ],
   "linterOptions": {
     "exclude": [
-      "node_modules/**",
-      "src/components/parts/Memo.vue"
+      "node_modules/**"
     ]
   },
   "rules": {
