@@ -3,6 +3,7 @@ import store from '@/store';
 
 export interface IFilterState {
     filters: IFilter[];
+    activeFilterType: FilterType;
 }
 
 export interface IFilter {
@@ -24,6 +25,12 @@ class Filter extends VuexModule implements IFilterState {
         { type: FilterType.Private, active: false },
     ];
 
+    private activeFilterIndex: number = 0;
+
+    get activeFilterType(): FilterType {
+        return this.filters[this.activeFilterIndex].type;
+    }
+
     @Action
     public switch(index: number): void {
         this.SWITCH(index);
@@ -31,6 +38,7 @@ class Filter extends VuexModule implements IFilterState {
 
     @Mutation
     private SWITCH(index: number): void {
+        this.activeFilterIndex = index;
         this.filters.forEach((currentFilter: IFilter, currentIndex: number) => {
             if (currentIndex === index) {
                 this.filters[currentIndex].active = true;

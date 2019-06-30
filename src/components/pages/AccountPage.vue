@@ -65,7 +65,7 @@ export default class AccountPage extends Vue {
 
     public onClickedFilterItem(index: number): void {
         filterStore.switch(index);
-        noteService.filter(filterStore.filters[index].type)
+        noteService.filter(filterStore.activeFilterType)
             .then((result: any) => {
                 if (result.status === 'success') {
                     noteStore.replaceList(result.data);
