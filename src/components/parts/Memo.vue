@@ -1,214 +1,146 @@
 <template>
-    <div :class="rootClass">
-        <div :class="headerClass">
-            <input v-if="editMode" v-model="title" type="text" class="title title-input inner-container bg-surface">
-            <div v-else class="title"><a class="text-on-surface" href="#">{{ memoObject.title }}</a></div>
+    <section class="memo container bg-surface">
+        <div class="memo-header">
+            <span><a class="text-on-surface" :href="'/memo/' + this.memo.id">{{ memo.createdAt }}</a></span>
             <div class="buttons">
-                <button v-show="editMode" type="button" v-bind:class="previewButtonClass" @click="onClickedPreview">
-                    <i class="fab fa-markdown editor-markdown ml-3"></i>
-                </button>
                 <button type="button" @click="onClickOption" class="icon-btn icon-btn-brand">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
             </div>
             <div v-show="optionOpen" class="dropdown-menu">
-                <a v-show="!editMode" href="" @click.stop.prevent="onClickEdit" class="dropdown-item">Edit</a>
+                <router-link :to="'/edit/' + this.memo.id" @click.stop.prevent="onClickEdit" class="dropdown-item">Edit</router-link>
                 <a href="" @click.stop.prevent="" class="dropdown-item">Copy URL</a>
                 <a href="" @click.stop.prevent="onClickedDelete" class="dropdown-item text-error">Delete</a>
             </div>
         </div>
-        <div v-if="editMode" class="content">
-            <div v-if="preview" v-html="htmlDataBody" class="content-textarea inner-container bg-surface"></div>
-            <textarea v-else v-model="body" :id="'textarea-'+this.memoObject.id" class="content-textarea inner-container bg-surface" @keyup="onKeyupBody"></textarea>
-            <div class="content-buttons mt-2">
-                <button type="button" class="btn btn-secondary mr-2" @click.stop="onClickedCancel">Cancel</button>
-                <button type="button" class="btn btn-primary" @click.stop="onClickedSave">Save</button>
-            </div>
+        <div class="memo-content" @click="onClickedMemoContent">
+            <h1>{{ memoSummary.title }}</h1>
+            <p>{{ memoSummary.body }}</p>
+            <p>`[DEBUG] id:{{ memo.id }}, createdAt: {{ memo.createdAt }}, updatedAt: {{ memo.updatedAt }}`</p>
         </div>
-        <div v-else class="content">
-            <div v-html="htmlBody"></div>
-            <p>`[DEBUG] id:{{ memoObject.id }}, createdAt: {{ memoObject.createdAt }}, updatedAt: {{ memoObject.updatedAt }}`</p>
-        </div>
-    </div>
+    </section>
 </template>
 
-<script>
-import noteService from '@/services/note'
-import noteStore from '@/store/modules/note'
-import appStore, { StatusLevel } from '@/store/modules/app'
+<script lang="ts">
+import removeMd from 'remove-markdown';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import MarkdownIt from 'markdown-it'
-const md = new MarkdownIt()
+import router from '@/router';
 
+import noteService from '@/services/note';
+import noteStore, { IMemoState } from '@/store/modules/note';
+import appStore, { StatusLevel } from '@/store/modules/app';
 
-export default {
-    props: {
-        memoObject: Object,
-    },
-    data: () => ({
-        title: "",
-        body: "",
-        preview: false,
-        optionOpen: false,
-        editMode: false
-    }),
-    computed: {
-        htmlBody: function() {
-            return md.render(this.memoObject.body)
-        },
-        htmlDataBody: function() {
-            return md.render(this.body)
-        },
-        rootClass: function() {
-            return {
-                'root': true,
-                'root-editMode': this.editMode,
-                'bg-surface': !this.editMode,
-                'container': !this.editMode
-            }
-        },
-        headerClass: function() {
-            return {
-                'header': true,
-                'header-editMode': this.editMode
-            }
-        },
-        previewButtonClass: function () {
-            return {
-                'icon-btn': true,
-                'icon-btn-muted': !this.preview,
-                'icon-btn-primary': this.preview
-            }
-        },
-    },
-    methods: {
-        onClickOption: function() {
-            this.optionOpen = !this.optionOpen
-        },
-        onClickEdit: function() {
-            this.editMode = true
-            this.optionOpen = false
-            this.$nextTick(function() {
-                this.adjustBodyHeight()
-            })
-        },
-        onClickedPreview: function() {
-            if (this.title === "") {
-                this.title = this.titlePlaceholder
-            }
-            this.preview = !this.preview
-            this.$nextTick(function() {
-                if(!this.preview) {
-                    this.adjustBodyHeight()
-                }
-            })
-        },
-        onClickedCancel: function() {
-            this.editMode = false
-            this.preview = false
-        },
-        onClickedSave: function() {
-            noteService.save({
-                id: this.memoObject.id,
-                title: this.title? this.title : this.titlePlaceholder,
-                body: this.body
-            })
-            .then(result => {
-                if (result.status === "success") {
-                    noteStore.save(result.data)
-                    this.editMode = false
-                    this.preview = false
-                    const level = StatusLevel.Info
-                    const message = 'Successfully Saved'
-                    appStore.setStatus({ level, message })
-                }
-            })
-            .catch(err => {
-                const level = StatusLevel.Error
-                const message = err
-                appStore.setStatus({ level, message })
-            })
-        },
-        onKeyupBody: function() {
-            this.adjustBodyHeight()
-        },
-        adjustBodyHeight: function() {
-            if (this.editMode) {
-                let textarea = document.getElementById('textarea-'+this.memoObject.id)
-                textarea.style.height = '1px'
-                textarea.style.height = textarea.scrollHeight + 'px'
-            }
-        },
-        onClickedDelete: function() {
-            noteService.remove(this.memoObject.id)
-                .then(result => {
+interface IMemoSummary {
+    title: string;
+    body: string;
+}
+
+@Component({})
+export default class Memo extends Vue {
+    @Prop()
+    public memo!: IMemoState;
+
+    public preview: boolean = false;
+    public optionOpen: boolean = false;
+
+    get memoSummary(): IMemoSummary {
+        const plainText = removeMd(this.memo.body);
+        const lines = plainText.split('\n');
+        const title = lines[0];
+        const body = lines.slice(1).join('\n');
+        return { title, body };
+    }
+
+    public onClickOption(): void {
+        this.optionOpen = !this.optionOpen;
+    }
+
+    public onClickEdit(): void {
+        this.optionOpen = false;
+    }
+
+    public onClickedDelete(): void {
+        noteService.remove(this.memo.id)
+                .then((result: any): void => {
                     if (result.status === 'success') {
-                        noteStore.remove(result.data.id)
-                        this.optionOpen = false
-                        const level = StatusLevel.Info
-                        const message = 'Successfully Deleted'
-                        appStore.setStatus({ level, message })
+                        noteStore.remove(result.data.id);
+                        this.optionOpen = false;
+                        const level = StatusLevel.Info;
+                        const message = 'Successfully Deleted';
+                        appStore.setStatus({ level, message });
                     }
                 })
-                .catch(err => {
-                    const level = StatusLevel.Error
-                    const message = err
-                    appStore.setStatus({ level, message })
-                })
-        }
-    },
-    created: function() {
-        this.title = this.memoObject.title
-        this.body = this.memoObject.body
+                .catch((err: Error): void => {
+                    const level = StatusLevel.Error;
+                    const message = err.toString();
+                    appStore.setStatus({ level, message });
+                });
+    }
+
+    public onClickedMemoContent(): void {
+        router.push('/memo/' + this.memo.id );
     }
 }
 </script>
 
 
-<style scoped lang="scss">
-.root {
+<style lang="scss">
+.memo {
     text-align: left;
     height: auto;
-    font-size: 1rem;
     font-weight: 400;
-    line-height: 1.5rem;
     background-clip: padding-box;
-    z-index: 0;
-}
-.root-editMode {
-    background-color: transparent;
-    border: none;
 }
 
-.header {
+.memo-header {
     padding: 0.75rem 1.0rem;
     border-bottom: 1px solid $border;
 
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 
     position: relative;
-}
-.header-editMode {
-    border-bottom: none;
-}
 
-
-.title {
-    flex-grow: 1;
-    margin-right: 1.0rem;
-    font-size: 1.2rem;
+    height: 2.5rem;
 }
 
-.content {
+.memo-content {
     padding: .75rem 1.0rem;
+    cursor: pointer;
+}
+.memo-content h1,
+.memo-content h2,
+.memo-content h3,
+.memo-content h4,
+.memo-content h5,
+.memo-content h6 {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    height: 1.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.title-input {
-    flex-grow:1;
+.memo-content p {
+    color: $text-muted;
+    font-size: 0.875rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5rem;
+    max-height: 4.5rem;
+    margin-bottom: 0;
+
+    // chrome & safari only
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
 }
-.content-textarea {
+
+.memo-content-textarea {
     overflow: hidden;
     outline: none;
     resize: none;
@@ -216,7 +148,7 @@ export default {
     height: auto;
     min-height: 10rem;
 }
-.content-buttons {
+.memo-content-buttons {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;

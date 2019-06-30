@@ -4,7 +4,7 @@
             <span>{{ date }}</span>
         </div>
         <div class="memos">
-            <Memo class="mb-4" v-for="memo in memos" :key="memo.id" :id="memo.id" :memoObject="memo"/>
+            <Memo class="mb-4" v-for="memo in memos" :key="memo.id" :id="memo.id" :memo="memo"/>
         </div>
     </div>
 </template>
