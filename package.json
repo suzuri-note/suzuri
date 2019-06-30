@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@types/markdown-it": "0.0.7",
+    "@types/remove-markdown": "0.1.1",
     "@types/shortid": "0.0.29",
     "bootstrap": "4.3.1",
     "core-js": "^2.6.5",
     "markdown-it": "8.4.2",
+    "remove-markdown": "0.3.0",
     "shortid": "^2.2.14",
     "vue": "^2.6.10",
     "vue-click-outside": "1.0.7",
