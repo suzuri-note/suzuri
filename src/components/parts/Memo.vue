@@ -1,15 +1,17 @@
 <template>
     <section class="memo container bg-surface">
         <div class="memo-header">
-            <span><a id ="memo-permalink" class="text-muted" :href="'/memo/' + this.memo.id">{{ timestamp }}</a></span>
+            <span>
+                <router-link :id ="'memo-permalink-' + memo.id" class="text-muted" :to="'/memo/' + memo.id">{{ timestamp }}</router-link>
+            </span>
             <div class="buttons" v-click-outside="closeDropdownMenu">
                 <button type="button" @click="onClickOption" class="icon-btn icon-btn-brand">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
             </div>
             <div v-show="optionOpen" class="dropdown-menu">
-                <router-link :to="'/edit/' + this.memo.id" @click.stop.prevent="onClickEdit" class="dropdown-item">Edit</router-link>
-                <clipboard-copy for="memo-permalink" @click.stop.prevent="closeDropdownMenu" class="dropdown-item">Copy URL</clipboard-copy>
+                <router-link :to="'/edit/' + memo.id" @click.stop.prevent="onClickEdit" class="dropdown-item">Edit</router-link>
+                <clipboard-copy :for="'memo-permalink-' + memo.id" @click.stop.prevent="closeDropdownMenu" class="dropdown-item">Copy URL</clipboard-copy>
                 <a href="" @click.stop.prevent="onClickedDelete" class="dropdown-item text-error">Delete</a>
             </div>
         </div>
