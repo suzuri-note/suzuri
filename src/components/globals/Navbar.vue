@@ -6,7 +6,7 @@
       </div>
       
       <div class="navbar-menu">
-        <router-link to="/edit">
+        <router-link to="/edit/new">
           <button type="button" class="icon-btn icon-btn-primary"><i class="fas fa-plus"></i></button>
         </router-link>
         <router-link to="/account" class="ml-1">

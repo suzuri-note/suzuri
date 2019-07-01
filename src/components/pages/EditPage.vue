@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Route } from 'vue-router';
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 
 import noteService, { ISingleResponse } from '@/services/note';
 import noteStore from '@/store/modules/note';
@@ -31,45 +31,32 @@ import localstorage from '@/lib/localstorage';
 import Editor from '@/components/parts/Editor.vue';
 import Footer from '@/components/parts/Footer.vue';
 
+// Add the custom hook to use `beforeRouteUpdate` in the component
+// ref. https://github.com/vuejs/vue-class-component#adding-custom-hooks
+Component.registerHooks(['beforeRouteUpdate']);
+
 @Component({ components: { Editor, Footer } })
 export default class EditPage extends Vue {
-  public id!: string | null;
+  public id!: string;
   public body!: string;
   public preview!: boolean;
 
   constructor() {
     super();
-    this.id = null;
+    this.id = '';
     this.body = '';
     this.preview = false;
   }
 
   public created() {
-    const id: string | Array<string | null> = this.$route.query.id;
-    if (id instanceof Array) {
-      if (id[0] !== undefined) {
-        this.id = id[0];
-      }
-    } else {
-      this.id = id;
-    }
+    this.setID(this.$route.params.id);
+  }
 
-    if (this.id != null) {
-      noteService.get(this.id)
-        .then((result: ISingleResponse): void => {
-            if (result.status === 'success') {
-                this.body = result.data.body;
-            }
-        })
-        .catch((err: Error): void => {
-            const level = StatusLevel.Error;
-            const message = err.toString();
-            appStore.setStatus({ level, message });
-        });
-    } else {
-        const { body } = localstorage.read();
-        this.body = body;
-    }
+  // `beforeRouteUpdate` navigation guard called before route updated
+  // ref. https://router.vuejs.org/guide/essentials/dynamic-matching.html#reacting-to-params-changes
+  public beforeRouteUpdate(to: Route, from: Route, next: (to?: string | Location | false | ((vm: Vue) => any) | void) => void) {
+    this.setID(to.params.id);
+    next();
   }
 
   get navbarHidden(): boolean {
@@ -84,7 +71,7 @@ export default class EditPage extends Vue {
         return;
     }
     noteService.save({
-        id: '',
+        id: this.id,
         title: 'TITLE',
         body: this.body,
     })
@@ -117,6 +104,30 @@ export default class EditPage extends Vue {
 
   public onChangedBody(newValue: string): void {
     this.body = newValue;
+  }
+
+  private setID(id: string): void {
+    this.id = id === 'new' ? '' : id;
+  }
+
+  @Watch('id')
+  private onIDChanged(newID: string) {
+    if (newID !== '') {
+      noteService.get(newID)
+        .then((result: ISingleResponse): void => {
+            if (result.status === 'success') {
+                this.body = result.data.body;
+            }
+        })
+        .catch((err: Error): void => {
+            const level = StatusLevel.Error;
+            const message = err.toString();
+            appStore.setStatus({ level, message });
+        });
+    } else {
+        const { body } = localstorage.read();
+        this.body = body;
+    }
   }
 }
 </script>
