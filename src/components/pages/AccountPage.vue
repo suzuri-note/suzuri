@@ -6,8 +6,8 @@
                 <a class="ml-2">You</a>
             </div>
             <div class="profile-right">
-                <a>yourmail@your.com</a>
-                <i class="fas fa-cog ml-2"></i>
+                <router-link to="/setting" class="text-muted">yourmail@your.com</router-link>
+                <router-link to="/setting"><i class="fas fa-cog ml-2 text-muted"></i></router-link>
             </div>
         </section>
         <section class="note">
