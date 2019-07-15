@@ -2,7 +2,7 @@
     <nav :class="navClass">
       <div class="navbar-brand">
         <a href="#" class="navbar-item text-brand">SUZURI</a>
-        <span class="ml-1">v0.1.2 alpha</span>
+        <span class="ml-1">v0.2.0 alpha</span>
       </div>
       
       <div class="navbar-menu">
