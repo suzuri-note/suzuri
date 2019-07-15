@@ -14,7 +14,16 @@
         </div>
         <div id="editor-body" :class="editorBodyClass">
             <div v-show="preview" class="editor-preview" v-html="htmlBody"></div>
-            <textarea v-show="!preview" id="editor-textarea" v-model="bodyModel" class="editor-textarea" @input="onInput" @change="onChange"></textarea>
+            <textarea 
+                v-show="!preview" 
+                id="editor-textarea" 
+                v-model="bodyModel" 
+                class="editor-textarea" 
+                @input="onInput" 
+                @change="onChange"
+                @keydown.tab="onTabPressed"
+            >
+            </textarea>
         </div>
     </div>
 </template>
@@ -126,6 +135,11 @@ export default class Editor extends Vue {
 
     public onClickedDone(): void {
         this.clickedDone();
+    }
+
+    public onTabPressed(e: Event): void {
+        e.preventDefault();
+        document.execCommand('insertText', false, '  ');
     }
 
     @Watch('preview')
