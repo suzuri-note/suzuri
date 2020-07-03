@@ -24,7 +24,7 @@ import { Vue, Component, Prop, Emit, Watch } from 'vue-property-decorator';
 
 import noteService, { ISingleResponse } from '@/services/note';
 import noteStore from '@/store/modules/note';
-import appStore, { StatusLevel } from '@/store/modules/app';
+import appStore, { StatusLevel } from '@/store/mod  ules/app';
 import datelib from '@/lib/datelib';
 import localstorage from '@/lib/localstorage';
 
@@ -216,7 +216,7 @@ export default class Editor extends Vue {
 
 .editor-body {
     height: 100%;
-    padding-top: 3.25rem;
+    padding-top: 3.25rem; 
 }
 
 .editor-textarea, .editor-preview  {
