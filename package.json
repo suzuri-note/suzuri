@@ -17,7 +17,7 @@
     "bootstrap": "4.3.1",
     "core-js": "^2.6.5",
     "javascript-time-ago": "2.0.1",
-    "markdown-it": "8.4.2",
+    "markdown-it": "12.3.2",
     "remove-markdown": "0.3.0",
     "shortid": "^2.2.14",
     "vue": "^2.6.10",
